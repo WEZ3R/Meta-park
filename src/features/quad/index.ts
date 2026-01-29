@@ -1,0 +1,1 @@
+export { QuadPage } from './QuadPage'
