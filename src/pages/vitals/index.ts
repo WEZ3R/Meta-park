@@ -1,0 +1,1 @@
+export { VitalsPage } from './VitalsPage'
