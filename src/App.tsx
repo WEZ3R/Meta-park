@@ -4,6 +4,8 @@ import { AuthProvider } from './shared/context/AuthContext'
 import { ViewerPage } from './features/viewer'
 import { QuadPage } from './features/quad'
 import { AdminPage } from './features/admin'
+import { ScreensaverAdnPage } from './features/screensaver-adn'
+import { ScreensaverSciencePage } from './features/screensaver-science'
 import './App.css'
 
 function AppRoutes() {
@@ -12,6 +14,8 @@ function AppRoutes() {
       <Route path="/viewer" element={<ViewerPage />} />
       <Route path="/quad" element={<QuadPage />} />
       <Route path="/admin" element={<AdminPage />} />
+      <Route path="/screensaver-adn" element={<ScreensaverAdnPage />} />
+      <Route path="/screensaver-science" element={<ScreensaverSciencePage />} />
       <Route path="/" element={<Navigate to="/viewer" />} />
     </Routes>
   )
