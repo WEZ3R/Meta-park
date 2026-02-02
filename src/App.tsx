@@ -8,6 +8,7 @@ import { CameraPublique1Page } from './pages/cameraPublique1'
 import { CameraPublique2Page } from './pages/cameraPublique2'
 import { VitalsPage } from './pages/vitals'
 import { RetranscriptionDirectPage } from './pages/retranscriptionDirect'
+import { DinoChaseGame } from './pages/dinoChase'
 import './App.css'
 
 function AppRoutes() {
@@ -20,6 +21,7 @@ function AppRoutes() {
       <Route path="/camera-publique-2" element={<CameraPublique2Page />} />
       <Route path="/vitals" element={<VitalsPage />} />
       <Route path="/retranscription-direct" element={<RetranscriptionDirectPage />} />
+      <Route path="/dino-chase" element={<DinoChaseGame />} />
       <Route path="/" element={<Navigate to="/admin" />} />
     </Routes>
   )
