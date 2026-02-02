@@ -1,6 +1,8 @@
 import { ServerStatus } from '../types'
 
-const API_BASE = import.meta.env.DEV ? 'http://localhost:3001' : ''
+let ip = '10.137.128.252' // Replace with your desired IP address
+
+const API_BASE = import.meta.env.DEV ? 'http://'+ip+':3001' : ''
 
 export const api = {
   getStatus: async (): Promise<ServerStatus> => {
@@ -22,6 +24,24 @@ export const api = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ camera })
+    })
+    return res.json()
+  },
+
+  setPhase: async (phase: number): Promise<{ success: boolean; phase: number }> => {
+    const res = await fetch(`${API_BASE}/api/setPhase`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phase })
+    })
+    return res.json()
+  },
+
+  setVitals: async (vitals: boolean[]): Promise<{ success: boolean; vitals: boolean[] }> => {
+    const res = await fetch(`${API_BASE}/api/setVitals`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ vitals })
     })
     return res.json()
   },

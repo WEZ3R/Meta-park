@@ -102,3 +102,85 @@
   background: #4ade80;
   color: #1a1a2e;
 }
+
+.admin-section {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #1e3a5f;
+}
+
+.section-title {
+  color: #fff;
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+}
+
+.admin-phase-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: #0f3460;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.phase-label {
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.phase-value {
+  font-weight: bold;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+}
+
+.phase-value.phase-0 {
+  background: #4ade80;
+  color: #1a1a2e;
+}
+
+.phase-value.phase-1 {
+  background: #ef4444;
+  color: #fff;
+}
+
+.phase-value.phase-2 {
+  background: #f59e0b;
+  color: #1a1a2e;
+}
+
+.phase-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-phase {
+  background: #0f3460;
+  color: #94a3b8;
+}
+
+.btn-phase.active {
+  background: #3b82f6;
+  color: #fff;
+}
+
+.vitals-toggles {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-vital {
+  flex: 1;
+}
+
+.btn-vital.vital-active {
+  background: #4ade80;
+  color: #1a1a2e;
+}
+
+.btn-vital.vital-inactive {
+  background: #64748b;
+  color: #fff;
+}

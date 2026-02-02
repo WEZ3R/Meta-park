@@ -2,8 +2,22 @@ import { useApp } from '../../shared/context/AppContext'
 import { CameraSelector } from './CameraSelector'
 import './AdminPage.css'
 
+const PHASE_LABELS: Record<number, string> = {
+  0: 'Veille',
+  1: 'Signal Erreur',
+  2: 'Post-Erreur',
+}
+
 export function AdminPage() {
-  const { status, updateShutdown } = useApp()
+  const { status, updateShutdown, setPhase, setVitals } = useApp()
+  const currentPhase = status?.phase ?? 0
+  const vitals = status?.vitals ?? [true, true, true]
+
+  const toggleVital = (index: number) => {
+    const updated = [...vitals]
+    updated[index] = !updated[index]
+    setVitals(updated)
+  }
 
   return (
     <div className="admin-page">
@@ -38,6 +52,42 @@ export function AdminPage() {
         </div>
 
         <CameraSelector />
+
+        <div className="admin-section">
+          <h3 className="section-title">Phase globale</h3>
+          <div className="admin-phase-info">
+            <span className="phase-label">Phase actuelle:</span>
+            <span className={`phase-value phase-${currentPhase}`}>
+              {PHASE_LABELS[currentPhase] ?? `Phase ${currentPhase}`}
+            </span>
+          </div>
+          <div className="phase-buttons">
+            {[0, 1, 2].map(p => (
+              <button
+                key={p}
+                className={`btn btn-phase ${currentPhase === p ? 'active' : ''}`}
+                onClick={() => setPhase(p)}
+              >
+                {PHASE_LABELS[p]}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="admin-section">
+          <h3 className="section-title">Constantes vitales</h3>
+          <div className="vitals-toggles">
+            {vitals.map((active, i) => (
+              <button
+                key={i}
+                className={`btn btn-vital ${active ? 'vital-active' : 'vital-inactive'}`}
+                onClick={() => toggleVital(i)}
+              >
+                Vital {i + 1}: {active ? 'ON' : 'OFF'}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   )
