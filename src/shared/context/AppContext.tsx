@@ -7,6 +7,7 @@ interface AppContextValue {
   loading: boolean
   error: string | null
   updateShutdown: (shutdown: boolean) => Promise<void>
+  setBlackScreen: (blackScreen: boolean) => Promise<void>
   setCamera: (camera: number) => Promise<void>
   setPhase: (phase: number) => Promise<void>
   setVitals: (vitals: boolean[]) => Promise<void>
@@ -49,6 +50,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       const localShutdown = localStorage.getItem('metapark_shutdown')
       setStatus(prev => ({
         isShutdown: localShutdown !== null ? localShutdown === 'true' : false,
+        isBlackScreen: false,
         currentCamera: 1,
         startTime: 0,
         serverTime: 0,
@@ -72,6 +74,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
       const result = await api.updateState(shutdown)
       if (result.success) {
         setStatus(prev => prev ? { ...prev, isShutdown: result.isShutdown } : null)
+      }
+    } catch { /* server will sync via polling */ }
+  }, [])
+
+  const setBlackScreenState = useCallback(async (blackScreen: boolean) => {
+    setStatus(prev => prev ? { ...prev, isBlackScreen: blackScreen } : null)
+    try {
+      const result = await api.setBlackScreen(blackScreen)
+      if (result.success) {
+        setStatus(prev => prev ? { ...prev, isBlackScreen: result.isBlackScreen } : null)
       }
     } catch { /* server will sync via polling */ }
   }, [])
@@ -114,7 +126,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, [fetchStatus])
 
   return (
-    <AppContext.Provider value={{ status, loading, error, updateShutdown, setCamera: setCameraState, setPhase: setPhaseState, setVitals: setVitalsState, refetchStatus: fetchStatus }}>
+    <AppContext.Provider value={{ status, loading, error, updateShutdown, setBlackScreen: setBlackScreenState, setCamera: setCameraState, setPhase: setPhaseState, setVitals: setVitalsState, refetchStatus: fetchStatus }}>
       {children}
     </AppContext.Provider>
   )

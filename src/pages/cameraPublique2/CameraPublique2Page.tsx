@@ -8,6 +8,10 @@ export function CameraPublique2Page() {
   const phase = status?.phase ?? 0
   const isShutdown = status?.isShutdown ?? false
 
+  if (status?.isBlackScreen) {
+    return <div style={{ width: '100vw', height: '100vh', background: '#000' }} />
+  }
+
   if (phase === 1 || isShutdown) {
     return <ScreensaverVideo videoSrc="/videos/errorsignal.mp4" />
   }

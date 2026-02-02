@@ -21,16 +21,16 @@ export function CameraGrid({ activeCamera = 0, className = '' }: CameraGridProps
   return (
     <div className={`camera-grid ${className}`}>
       <CameraCell cameraNumber={1} isActive={activeCamera === 1}>
-        <VideoPlayer ref={video1Ref} src="/videos/camera-1.mp4" />
+        <VideoPlayer ref={video1Ref} src="/videos/Parc - Caméra 05.mp4" />
       </CameraCell>
       <CameraCell cameraNumber={2} isActive={activeCamera === 2}>
-        <VideoPlayer ref={video2Ref} src="/videos/camera-2.mp4" />
+        <VideoPlayer ref={video2Ref} src="/videos/Parc - Caméra 06.mp4" />
       </CameraCell>
       <CameraCell cameraNumber={3} isActive={activeCamera === 3}>
-        <VideoPlayer ref={video3Ref} src="/videos/camera-3.mp4" />
+        <VideoPlayer ref={video3Ref} src="/videos/Parc - Caméra 07.mp4" />
       </CameraCell>
       <CameraCell cameraNumber={4} isActive={activeCamera === 4}>
-        <VideoPlayer ref={video4Ref} src="/videos/camera-4.mp4" />
+        <VideoPlayer ref={video4Ref} src="/videos/Parc - Caméra 05.mp4" />
       </CameraCell>
     </div>
   )

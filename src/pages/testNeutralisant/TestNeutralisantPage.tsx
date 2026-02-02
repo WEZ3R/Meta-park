@@ -59,6 +59,10 @@ export function TestNeutralisantPage() {
     }, 2000)
   }
 
+  if (status?.isBlackScreen) {
+    return <div style={{ width: '100vw', height: '100vh', background: '#000' }} />
+  }
+
   if (phase === 1 || isShutdown) {
     return <ScreensaverVideo videoSrc="/videos/ERRORSIGNAL.mp4" />
   }

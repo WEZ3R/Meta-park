@@ -1,5 +1,5 @@
+import { useState, useRef } from 'react'
 import { useApp } from '../../shared/context/AppContext'
-import { CameraSelector } from './CameraSelector'
 import './AdminPage.css'
 
 const PHASE_LABELS: Record<number, string> = {
@@ -8,15 +8,46 @@ const PHASE_LABELS: Record<number, string> = {
   2: 'Post-Erreur',
 }
 
+const AUDIO_TRACKS = [
+  { label: '1. Premier contact', src: '/audio/1. Premier contact (violet).mp3' },
+  { label: '2. Demande de vérification', src: '/audio/2. Demande de vérification (violet).mp3' },
+  { label: '3. Détection de l\'anomalie', src: '/audio/3. Détéction de l_anomalie (violet).mp3' },
+  { label: '4. Réception coordonnées (1)', src: '/audio/4. Réception des coordonnées (violet 1).mp3' },
+  { label: '4. Réception coordonnées (2)', src: '/audio/4. Réception des coordonnées (violet 2).mp3' },
+  { label: '5. Résolution appât', src: '/audio/5. Résolution appât (violet).mp3' },
+  { label: '7. Retour du signal', src: '/audio/7. Retour du signal.mp3' },
+  { label: '8. Entrée dans la serre', src: '/audio/8. Entrée dans la serre.mp3' },
+  { label: '10. Diffusion du gaz', src: '/audio/10. Diffusion du gaz.mp3' },
+  { label: 'DJI_0417_D', src: '/audio/DJI_20260202111340_0417_D.mp3' },
+]
+
 export function AdminPage() {
-  const { status, updateShutdown, setPhase, setVitals } = useApp()
+  const { status, updateShutdown, setBlackScreen, setPhase, setVitals } = useApp()
   const currentPhase = status?.phase ?? 0
   const vitals = status?.vitals ?? [true, true, true]
+  const [playingIndex, setPlayingIndex] = useState<number | null>(null)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
 
   const toggleVital = (index: number) => {
     const updated = [...vitals]
     updated[index] = !updated[index]
     setVitals(updated)
+  }
+
+  const playAudio = (index: number) => {
+    if (audioRef.current) {
+      audioRef.current.pause()
+      audioRef.current = null
+    }
+    if (playingIndex === index) {
+      setPlayingIndex(null)
+      return
+    }
+    const audio = new Audio(AUDIO_TRACKS[index].src)
+    audio.play()
+    audio.onended = () => setPlayingIndex(null)
+    audioRef.current = audio
+    setPlayingIndex(index)
   }
 
   return (
@@ -29,11 +60,6 @@ export function AdminPage() {
           <span className={`status-value ${status?.isShutdown ? 'error' : 'ok'}`}>
             {status?.isShutdown ? 'SHUTDOWN' : 'OPERATIONAL'}
           </span>
-        </div>
-
-        <div className="admin-camera-info">
-          <span className="camera-label">Active Camera:</span>
-          <span className="camera-value">CAM {status?.currentCamera ?? 1}</span>
         </div>
 
         <div className="admin-buttons">
@@ -51,7 +77,20 @@ export function AdminPage() {
           </button>
         </div>
 
-        <CameraSelector />
+        <div className="admin-section">
+          <h3 className="section-title">Sons</h3>
+          <div className="audio-buttons">
+            {AUDIO_TRACKS.map((track, i) => (
+              <button
+                key={i}
+                className={`btn btn-audio ${playingIndex === i ? 'playing' : ''}`}
+                onClick={() => playAudio(i)}
+              >
+                {playingIndex === i ? '■ ' : '▶ '}{track.label}
+              </button>
+            ))}
+          </div>
+        </div>
 
         <div className="admin-section">
           <h3 className="section-title">Phase globale</h3>
@@ -62,6 +101,12 @@ export function AdminPage() {
             </span>
           </div>
           <div className="phase-buttons">
+            <button
+              className={`btn ${status?.isBlackScreen ? 'btn-error' : 'btn-phase'} ${status?.isBlackScreen ? 'active' : ''}`}
+              onClick={() => setBlackScreen(!status?.isBlackScreen)}
+            >
+              Ecran Noir
+            </button>
             {[0, 1, 2].map(p => (
               <button
                 key={p}

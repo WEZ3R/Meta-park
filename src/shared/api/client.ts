@@ -46,6 +46,15 @@ export const api = {
     return res.json()
   },
 
+  setBlackScreen: async (blackScreen: boolean): Promise<{ success: boolean; isBlackScreen: boolean }> => {
+    const res = await fetch(`${API_BASE}/api/setBlackScreen`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ blackScreen })
+    })
+    return res.json()
+  },
+
   login: async (password: string): Promise<{ success: boolean }> => {
     const res = await fetch(`${API_BASE}/api/login`, {
       method: 'POST',

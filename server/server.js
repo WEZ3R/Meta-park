@@ -12,8 +12,11 @@ const PORT = process.env.PORT || 3001
 // Global state
 let state = {
   isShutdown: false,
+  isBlackScreen: false,
   currentCamera: 1,
-  startTime: Date.now()
+  startTime: Date.now(),
+  phase: 0,
+  vitals: [true, true, true]
 }
 
 const PASSWORD = '1234'
@@ -31,9 +34,12 @@ app.use('/images', express.static(path.join(__dirname, '../public/images')))
 app.get('/api/status', (req, res) => {
   res.json({
     isShutdown: state.isShutdown,
+    isBlackScreen: state.isBlackScreen,
     currentCamera: state.currentCamera,
     startTime: state.startTime,
-    serverTime: Date.now()
+    serverTime: Date.now(),
+    phase: state.phase,
+    vitals: state.vitals
   })
 })
 
@@ -54,6 +60,36 @@ app.post('/api/setCamera', (req, res) => {
     res.json({ success: true, currentCamera: state.currentCamera })
   } else {
     res.status(400).json({ error: 'camera must be 1-4' })
+  }
+})
+
+app.post('/api/setPhase', (req, res) => {
+  const { phase } = req.body
+  if (typeof phase === 'number' && phase >= 0) {
+    state.phase = phase
+    res.json({ success: true, phase: state.phase })
+  } else {
+    res.status(400).json({ error: 'phase must be a non-negative number' })
+  }
+})
+
+app.post('/api/setVitals', (req, res) => {
+  const { vitals } = req.body
+  if (Array.isArray(vitals) && vitals.every(v => typeof v === 'boolean')) {
+    state.vitals = vitals
+    res.json({ success: true, vitals: state.vitals })
+  } else {
+    res.status(400).json({ error: 'vitals must be an array of booleans' })
+  }
+})
+
+app.post('/api/setBlackScreen', (req, res) => {
+  const { blackScreen } = req.body
+  if (typeof blackScreen === 'boolean') {
+    state.isBlackScreen = blackScreen
+    res.json({ success: true, isBlackScreen: state.isBlackScreen })
+  } else {
+    res.status(400).json({ error: 'blackScreen must be a boolean' })
   }
 })
 
