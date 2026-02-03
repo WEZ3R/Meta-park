@@ -54,7 +54,7 @@ const QUESTIONS: Question[] = [
   {
     id: 1,
     type: 'time',
-    text: "À quelle heure est arrivée l'équipe de maintenance ?",
+    text: "À quelle heure le centre de controle a-t-il été initialisé le jour de l'incident ?",
     answer: '17:30',
   },
   {
@@ -124,7 +124,7 @@ const QUESTIONS: Question[] = [
   {
     id: 9,
     type: 'select',
-    text: "À quoi correspond le code d'accès à la salle ?",
+    text: "À quelle référence cinématographique fait référence le code d’accès du centre de contrôle ?",
     options: [
       "Date de naissance d'un agent de maintenance",
       'Nombre de dinosaures dans le parc',
@@ -136,7 +136,7 @@ const QUESTIONS: Question[] = [
   {
     id: 10,
     type: 'select',
-    text: "Dans quel secteur le dinosaure s'est échappé ?",
+    text: "Dans quel secteur le sujet est partis ?",
     options: ['Zone nord', 'Zone sud', 'Zone est', 'Zone ouest'],
     answer: 'Zone nord',
   },
@@ -187,7 +187,7 @@ const QUESTIONS: Question[] = [
   {
     id: 16,
     type: 'select',
-    text: 'Quel enclos a été ouvert ?',
+    text: 'Quel enclos a été ouvert pour ralentir le sujet lors de la poursuite ?',
     options: [
       'Raptors', 'T-Rex', 'Ptéranodons', 'Brachiosaures',
       'Dilophosaures', 'Stégosaures',
@@ -207,13 +207,13 @@ const QUESTIONS: Question[] = [
   {
     id: 18,
     type: 'number',
-    text: 'Nombre de victimes pendant la poursuite ?',
-    answer: 8134,
+    text: 'Nombre de victimes au total lors de l\'incident ?',
+    answer: 8136,
   },
   {
     id: 19,
     type: 'time',
-    text: 'À quelle heure Fabio envoie le gaz ?',
+    text: 'À quelle heure le sujet a-t-il été neutralisé ?',
     answer: '19:27',
   },
   {
@@ -230,35 +230,33 @@ const QUESTIONS: Question[] = [
   {
     id: 21,
     type: 'select',
-    text: 'Dans quelle serre Fabio envoie-t-il le dinosaure ?',
-    options: ['S-01', 'S-03', 'N-03'],
+    text: 'Dans quelle serre Fabio envoie-t-il le sujet ?',
+    options: ['S-01', 'S-03', 'N-05', 'D-02', 'W-04'],
     answer: 'S-03',
   },
   {
     id: 22,
     type: 'select',
-    text: 'Pourquoi le neutralisant doit-il être diffusé sous forme de gaz et non injecté ?',
+    text: 'Est ce que fabio à tiré sur le sujet ?',
     options: [
-      'À cause de la taille du T-Rex',
-      'Le T-Rex est immunisé aux injections',
-      "L'injection nécessite un contact direct trop dangereux",
-      'Le gaz agit plus rapidement',
-      'La peau du T-Rex est impénétrable',
+      'Fabio à manqué la cible',
+      'Fabio à tiré mais il a raté',
+      'Fabio n/a pas tiré sur le sujet',
+      'Fabio à tiré et à touché le sujet',
     ],
-    answer: 'À cause de la taille du T-Rex',
+    answer: 'Fabio à tiré et à touché le sujet',
   },
   {
     id: 23,
     type: 'select',
-    text: "Qu'est-ce qui arrive à Fabio ?",
+    text: "Qu'est-ce qui arrive à Fabio après les évènements ?",
     options: [
-      'Hôpital car gazé et blessé',
-      'Il s\'en sort indemne',
-      'Il est transféré dans un autre parc',
       'Il décède sur place',
+      'Il est à l\'hopital',
+      'Il est transféré dans un autre parc',
       'Il démissionne après l\'incident',
     ],
-    answer: 'Hôpital car gazé et blessé',
+    answer: 'Il est à l\'hopital',
   },
 ]
 

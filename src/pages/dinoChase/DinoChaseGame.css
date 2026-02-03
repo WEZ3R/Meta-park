@@ -641,6 +641,32 @@
   50% { opacity: 0.2; }
 }
 
+/* ── Loading Overlay (before error) ──────────────────── */
+
+.dc-loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(7, 11, 20, 0.88);
+  animation: dc-fade-in 0.3s ease;
+}
+
+.dc-loading-box {
+  text-align: center;
+  padding: 40px 60px;
+}
+
+.dc-loading-text {
+  font-family: 'Handjet', monospace;
+  font-size: 32px;
+  color: #f59e0b;
+  letter-spacing: 3px;
+  text-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+}
+
 /* ── Wrong Choice Error Overlay ───────────────────────── */
 
 .dc-error-overlay {

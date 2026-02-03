@@ -10,6 +10,7 @@ import { VitalsPage } from './pages/vitals'
 import { RetranscriptionDirectPage } from './pages/retranscriptionDirect'
 import { DinoChaseGame } from './pages/dinoChase'
 import { QuestionnairePage } from './pages/questionnaire'
+import { LogsPage } from './pages/logs'
 import './App.css'
 
 function AppRoutes() {
@@ -24,6 +25,7 @@ function AppRoutes() {
       <Route path="/retranscription-direct" element={<RetranscriptionDirectPage />} />
       <Route path="/dino-chase" element={<DinoChaseGame />} />
       <Route path="/questionnaire" element={<QuestionnairePage />} />
+      <Route path="/logs" element={<LogsPage />} />
       <Route path="/" element={<Navigate to="/admin" />} />
     </Routes>
   )

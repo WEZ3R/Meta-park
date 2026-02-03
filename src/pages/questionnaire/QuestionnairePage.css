@@ -61,7 +61,7 @@
 .q-item {
   border: 1.5px solid rgba(255, 255, 255, 0.12);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(70, 70, 70, 0.7);
   padding: 14px 18px;
   transition: border-color 0.2s ease;
 }
@@ -148,7 +148,8 @@
 }
 
 .q-select {
-  min-width: 200px;
+  width: 100%;
+  max-width: 500px;
   cursor: pointer;
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");

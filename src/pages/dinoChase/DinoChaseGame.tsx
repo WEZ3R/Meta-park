@@ -21,7 +21,6 @@ interface Fork {
   rightApex: Position
   left: ForkOption
   right: ForkOption
-  timerDuration: number
 }
 
 type StepType = 'locate' | 'chase' | 'choice' | 'result' | 'finale'
@@ -37,7 +36,6 @@ interface GameStep {
 // ═══════════════════════════════════════════════════════════
 
 const MX = 512
-const INITIAL_VISITORS = 8134
 const START_POS: Position = { x: MX, y: 700 }
 const ANTENNA: Position = { x: MX, y: 65 }
 
@@ -57,7 +55,7 @@ const FORKS: Fork[] = [
       description: 'Zone ouverte — Faible presence humaine',
       casualties: 9, isWorst: false,
     },
-    timerDuration: 15,
+
   },
   {
     forkPt: { x: MX, y: 395 },
@@ -74,7 +72,7 @@ const FORKS: Fork[] = [
       description: 'Equipe veterinaire en intervention',
       casualties: 0, isWorst: true,
     },
-    timerDuration: 15,
+
   },
   {
     forkPt: { x: MX, y: 205 },
@@ -91,7 +89,7 @@ const FORKS: Fork[] = [
       description: 'Aucun humain present — Jeunes dinosaures',
       casualties: 0, isWorst: true,
     },
-    timerDuration: 15,
+
   },
 ]
 
@@ -230,14 +228,12 @@ export function DinoChaseGame() {
   const [pursuerPos, setPursuerPos] = useState<Position>({ x: MX, y: 760 })
   const [choices, setChoices] = useState<('left' | 'right' | null)[]>([null, null, null])
   const [totalCasualties, setTotalCasualties] = useState(0)
-  const [timer, setTimer] = useState(15)
-  const [visitorFlash, setVisitorFlash] = useState(false)
   const [locatePhase, setLocatePhase] = useState<'waiting' | 'scanning' | 'found' | null>('waiting')
   const [errorChoice, setErrorChoice] = useState<string | null>(null)
+  const [errorLoading, setErrorLoading] = useState(false)
 
   const audioRef = useRef<HTMLAudioElement>(null)
   const rafRef = useRef(0)
-  const timerRef = useRef<ReturnType<typeof setInterval>>()
   const chosenRef = useRef(false)
   const stepIdxRef = useRef(0)
   const waypointsRef = useRef<Position[]>([])
@@ -246,20 +242,10 @@ export function DinoChaseGame() {
   useEffect(() => { stepIdxRef.current = stepIdx }, [stepIdx])
 
   const step = STEPS[stepIdx]
-  const visitors = INITIAL_VISITORS - totalCasualties
 
   const advance = useCallback(() => {
     setStepIdx(prev => Math.min(prev + 1, STEPS.length - 1))
   }, [])
-
-  // Flash visitor counter on casualty change
-  useEffect(() => {
-    if (totalCasualties > 0) {
-      setVisitorFlash(true)
-      const t = setTimeout(() => setVisitorFlash(false), 700)
-      return () => clearTimeout(t)
-    }
-  }, [totalCasualties])
 
   // ── LOCATE: scanning → found ─────────────────────────
   useEffect(() => {
@@ -308,25 +294,10 @@ export function DinoChaseGame() {
     return () => cancelAnimationFrame(rafRef.current)
   }, [stepIdx]) // eslint-disable-line
 
-  // ── CHOICE TIMER ───────────────────────────────────────
+  // ── CHOICE INIT ────────────────────────────────────────
   useEffect(() => {
     if (step.type !== 'choice') return
     chosenRef.current = false
-    const fork = FORKS[step.index!]
-    setTimer(fork.timerDuration)
-
-    timerRef.current = setInterval(() => {
-      setTimer(prev => {
-        const next = Math.max(prev - 0.1, 0)
-        if (next <= 0.05 && !chosenRef.current) {
-          const worst: 'left' | 'right' = fork.left.isWorst ? 'left' : 'right'
-          makeChoice(worst)
-        }
-        return next
-      })
-    }, 100)
-
-    return () => { if (timerRef.current) clearInterval(timerRef.current) }
   }, [stepIdx]) // eslint-disable-line
 
   // ── RESULT TIMEOUT ─────────────────────────────────────
@@ -336,35 +307,41 @@ export function DinoChaseGame() {
     return () => clearTimeout(t)
   }, [stepIdx]) // eslint-disable-line
 
+  // ── RESTART ────────────────────────────────────────────
+  const restart = useCallback(() => {
+    setStepIdx(0)
+    setDinoPos(START_POS)
+    setPursuerPos({ x: MX, y: 760 })
+    setChoices([null, null, null])
+    setTotalCasualties(0)
+    setLocatePhase('waiting')
+    setErrorChoice(null)
+    setErrorLoading(false)
+    chosenRef.current = false
+    chaseProgressRef.current = 0
+    waypointsRef.current = []
+  }, [])
+
   // ── MAKE CHOICE ────────────────────────────────────────
   const makeChoice = useCallback((side: 'left' | 'right') => {
     if (chosenRef.current) return
     chosenRef.current = true
-    if (timerRef.current) clearInterval(timerRef.current)
 
     const ci = STEPS[stepIdxRef.current].index!
     const fork = FORKS[ci]
     const opt = side === 'left' ? fork.left : fork.right
 
-    // Wrong choice → show error and retry
+    // Wrong choice → loading → error → restart from beginning
     if (opt.isWorst) {
-      setErrorChoice(opt.label)
+      setErrorLoading(true)
       setTimeout(() => {
-        setErrorChoice(null)
-        chosenRef.current = false
-        const f = FORKS[ci]
-        setTimer(f.timerDuration)
-        timerRef.current = setInterval(() => {
-          setTimer(prev => {
-            const next = Math.max(prev - 0.1, 0)
-            if (next <= 0.05 && !chosenRef.current) {
-              const worst: 'left' | 'right' = f.left.isWorst ? 'left' : 'right'
-              makeChoice(worst)
-            }
-            return next
-          })
-        }, 100)
-      }, 2500)
+        setErrorLoading(false)
+        setErrorChoice(opt.label)
+        setTimeout(() => {
+          setErrorChoice(null)
+          restart()
+        }, 2500)
+      }, 2000)
       return
     }
 
@@ -376,29 +353,12 @@ export function DinoChaseGame() {
     })
     setTotalCasualties(prev => prev + opt.casualties)
     setTimeout(() => setStepIdx(stepIdxRef.current + 1), 350)
-  }, [])
-
-  // ── RESTART ────────────────────────────────────────────
-  const restart = useCallback(() => {
-    setStepIdx(0)
-    setDinoPos(START_POS)
-    setPursuerPos({ x: MX, y: 760 })
-    setChoices([null, null, null])
-    setTotalCasualties(0)
-    setTimer(15)
-    setLocatePhase('waiting')
-    setErrorChoice(null)
-    chosenRef.current = false
-    chaseProgressRef.current = 0
-    waypointsRef.current = []
-  }, [])
+  }, [restart])
 
   // ── DERIVED ────────────────────────────────────────────
   const isChoice = step.type === 'choice'
   const isResult = step.type === 'result'
   const activeFork = (isChoice || isResult) ? FORKS[step.index!] : null
-  const timerFrac = isChoice && activeFork ? timer / activeFork.timerDuration : 1
-  const urgency = isChoice ? Math.max(0, 1 - timerFrac) : 0
   const gameStarted = locatePhase === null
   const dinoVisible = gameStarted && step.type !== 'finale'
   const pursuerVisible = gameStarted && step.type !== 'finale' && pursuerPos.y < 750
@@ -420,30 +380,9 @@ export function DinoChaseGame() {
   // ═════════════════════════════════════════════════════════
   return (
     <div className="dc-game">
-      {/* ── Urgency border ── */}
-      {isChoice && (
-        <div
-          className="dc-urgency"
-          style={{
-            boxShadow: urgency > 0.2
-              ? `inset 0 0 ${40 + urgency * 80}px rgba(239,68,68,${urgency * 0.5})`
-              : 'none',
-            animationDuration: `${Math.max(0.15, 1.2 - urgency * 1.1)}s`,
-          }}
-        />
-      )}
-
       {/* ── Header ── */}
       <header className="dc-header">
         <div className="dc-header-title">ALERTE PARC</div>
-        {gameStarted && (
-          <div className="dc-visitors">
-            <span className="dc-visitors-label">VISITEURS DANS LE PARC</span>
-            <span className={`dc-visitors-num ${visitorFlash ? 'dc-visitors-flash' : ''}`}>
-              {visitors}
-            </span>
-          </div>
-        )}
       </header>
 
       {/* ── SVG Map ── */}
@@ -707,21 +646,6 @@ export function DinoChaseGame() {
         )}
       </svg>
 
-      {/* ── Timer bar ── */}
-      {isChoice && (
-        <div className="dc-timer">
-          <div className="dc-timer-track">
-            <div className="dc-timer-fill" style={{
-              width: `${timerFrac * 100}%`,
-              backgroundColor: timerFrac > 0.5 ? '#22c55e' : timerFrac > 0.25 ? '#f59e0b' : '#ef4444',
-            }} />
-          </div>
-          <div className={`dc-timer-text ${timerFrac < 0.25 ? 'dc-timer-crit' : ''}`}>
-            {Math.ceil(timer)}s
-          </div>
-        </div>
-      )}
-
       {/* ── Choice buttons ── */}
       {isChoice && activeFork && (
         <div className="dc-choices">
@@ -753,6 +677,15 @@ export function DinoChaseGame() {
           </div>
         )
       })()}
+
+      {/* ── Loading before error ── */}
+      {errorLoading && (
+        <div className="dc-loading-overlay">
+          <div className="dc-loading-box">
+            <div className="dc-loading-text">CALCUL EN COURS<span className="dc-dots" /></div>
+          </div>
+        </div>
+      )}
 
       {/* ── Wrong choice error overlay ── */}
       {errorChoice && (
@@ -786,7 +719,7 @@ export function DinoChaseGame() {
               <button className="dc-locate-btn"
                 onClick={() => setLocatePhase('scanning')}
                 onTouchEnd={(e) => { e.preventDefault(); setLocatePhase('scanning') }}>
-                LOCALISER LA PUCE
+                RÉCUPERER INFOS PUCES
               </button>
             </>
           )}
@@ -803,7 +736,7 @@ export function DinoChaseGame() {
                   <line x1="60" y1="40" x2="74" y2="40" stroke="#ef4444" strokeWidth="1.5" />
                 </svg>
               </div>
-              <div className="dc-locate-status">RECHERCHE DU SIGNAL<span className="dc-dots" /></div>
+              <div className="dc-locate-status">RECHERCHE DES INFOS<span className="dc-dots" /></div>
             </>
           )}
           {locatePhase === 'found' && (
@@ -816,7 +749,7 @@ export function DinoChaseGame() {
                 </svg>
               </div>
               <div className="dc-locate-found-text">SIGNAL DETECTE</div>
-              <div className="dc-locate-found-zone">ZONE SUD — ENCLOS PRIMAIRE</div>
+              <div className="dc-locate-found-zone">ZONE NORD — ENCLOS PRIMAIRE</div>
             </>
           )}
         </div>
@@ -837,8 +770,8 @@ export function DinoChaseGame() {
             <div className="dc-signal-title">PERTE DE SIGNAL</div>
             <div className="dc-signal-sub">Derniere position connue : ANTENNE CENTRALE</div>
             <div className="dc-signal-visitors">
-              <span className="dc-signal-visitors-label">Visiteurs restants</span>
-              <span className="dc-signal-visitors-num">{visitors}</span>
+              <span className="dc-signal-visitors-label">VICTIMES TOTALES</span>
+              <span className="dc-signal-visitors-num">{totalCasualties}</span>
             </div>
             <button className="dc-restart" onClick={restart}>REJOUER</button>
           </div>

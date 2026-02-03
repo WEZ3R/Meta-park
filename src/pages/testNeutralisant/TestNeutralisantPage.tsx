@@ -44,6 +44,7 @@ export function TestNeutralisantPage() {
   const [resultState, setResultState] = useState<ResultState>('idle')
   const [dots, setDots] = useState(1)
   const [percentage, setPercentage] = useState<number | null>(null)
+  const [slotFeedback, setSlotFeedback] = useState<('correct' | 'misplaced' | 'wrong' | null)[]>(Array(SLOT_COUNT).fill(null))
 
   // Animated dots during loading
   useEffect(() => {
@@ -71,6 +72,7 @@ export function TestNeutralisantPage() {
     if (resultState === 'error') {
       setResultState('idle')
       setPercentage(null)
+      setSlotFeedback(Array(SLOT_COUNT).fill(null))
     }
   }
 
@@ -85,6 +87,7 @@ export function TestNeutralisantPage() {
     if (resultState === 'error') {
       setResultState('idle')
       setPercentage(null)
+      setSlotFeedback(Array(SLOT_COUNT).fill(null))
     }
   }
 
@@ -96,6 +99,14 @@ export function TestNeutralisantPage() {
     const isCorrect = sequence.every((s, i) => s === CORRECT_SEQUENCE[i])
 
     setTimeout(() => {
+      // Compute per-slot feedback
+      const feedback: ('correct' | 'misplaced' | 'wrong')[] = sequence.map((s, i) => {
+        if (s === CORRECT_SEQUENCE[i]) return 'correct'
+        if (CORRECT_SEQUENCE.includes(s!)) return 'misplaced'
+        return 'wrong'
+      })
+      setSlotFeedback(feedback)
+
       if (isCorrect) {
         setPercentage(100)
         setResultState('success')
@@ -111,6 +122,7 @@ export function TestNeutralisantPage() {
     setSequence(Array(SLOT_COUNT).fill(null))
     setResultState('idle')
     setPercentage(null)
+    setSlotFeedback(Array(SLOT_COUNT).fill(null))
   }
 
   // ── Guards ──────────────────────────────────────────────
@@ -149,17 +161,21 @@ export function TestNeutralisantPage() {
 
         {/* Slots */}
         <div className="tn-slots">
-          {sequence.map((compound, i) => (
-            <button
-              key={i}
-              className={`tn-slot ${compound ? 'tn-slot--filled' : 'tn-slot--empty'}`}
-              onClick={() => removeFromSequence(i)}
-              disabled={!compound || isLocked}
-            >
-              {compound && <span className="tn-slot-label">{compound}</span>}
-              {!compound && <span className="tn-slot-index">{i + 1}</span>}
-            </button>
-          ))}
+          {sequence.map((compound, i) => {
+            const fb = slotFeedback[i]
+            const fbClass = fb ? `tn-slot--${fb}` : ''
+            return (
+              <button
+                key={i}
+                className={`tn-slot ${compound ? 'tn-slot--filled' : 'tn-slot--empty'} ${fbClass}`}
+                onClick={() => removeFromSequence(i)}
+                disabled={!compound || isLocked}
+              >
+                {compound && <span className="tn-slot-label">{compound}</span>}
+                {!compound && <span className="tn-slot-index">{i + 1}</span>}
+              </button>
+            )
+          })}
         </div>
 
         {/* Actions */}
