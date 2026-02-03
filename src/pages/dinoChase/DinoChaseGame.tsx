@@ -37,7 +37,7 @@ interface GameStep {
 // ═══════════════════════════════════════════════════════════
 
 const MX = 512
-const INITIAL_VISITORS = 486
+const INITIAL_VISITORS = 8134
 const START_POS: Position = { x: MX, y: 700 }
 const ANTENNA: Position = { x: MX, y: 65 }
 
@@ -50,12 +50,12 @@ const FORKS: Fork[] = [
     left: {
       label: 'ENCLOS CARNIVORES',
       description: 'Zone haute securite — Personnel arme',
-      casualties: 18, isWorst: true,
+      casualties: 0, isWorst: true,
     },
     right: {
       label: 'ENCLOS HERBIVORES',
       description: 'Zone ouverte — Faible presence humaine',
-      casualties: 7, isWorst: false,
+      casualties: 9, isWorst: false,
     },
     timerDuration: 15,
   },
@@ -67,12 +67,12 @@ const FORKS: Fork[] = [
     left: {
       label: 'ZONE SAFARI',
       description: 'Vehicules civils en circulation',
-      casualties: 32, isWorst: true,
+      casualties: 1767, isWorst: false,
     },
     right: {
       label: 'ENCLOS SOIGNEURS',
       description: 'Equipe veterinaire en intervention',
-      casualties: 9, isWorst: false,
+      casualties: 0, isWorst: true,
     },
     timerDuration: 15,
   },
@@ -84,12 +84,12 @@ const FORKS: Fork[] = [
     left: {
       label: 'ENCLOS CARNIVORES',
       description: 'Risque de breche secondaire — Gardes mobilises',
-      casualties: 23, isWorst: true,
+      casualties: 6358, isWorst: false,
     },
     right: {
       label: 'NURSERIE',
       description: 'Aucun humain present — Jeunes dinosaures',
-      casualties: 0, isWorst: false,
+      casualties: 0, isWorst: true,
     },
     timerDuration: 15,
   },
@@ -233,6 +233,7 @@ export function DinoChaseGame() {
   const [timer, setTimer] = useState(15)
   const [visitorFlash, setVisitorFlash] = useState(false)
   const [locatePhase, setLocatePhase] = useState<'waiting' | 'scanning' | 'found' | null>('waiting')
+  const [errorChoice, setErrorChoice] = useState<string | null>(null)
 
   const audioRef = useRef<HTMLAudioElement>(null)
   const rafRef = useRef(0)
@@ -345,6 +346,29 @@ export function DinoChaseGame() {
     const fork = FORKS[ci]
     const opt = side === 'left' ? fork.left : fork.right
 
+    // Wrong choice → show error and retry
+    if (opt.isWorst) {
+      setErrorChoice(opt.label)
+      setTimeout(() => {
+        setErrorChoice(null)
+        chosenRef.current = false
+        const f = FORKS[ci]
+        setTimer(f.timerDuration)
+        timerRef.current = setInterval(() => {
+          setTimer(prev => {
+            const next = Math.max(prev - 0.1, 0)
+            if (next <= 0.05 && !chosenRef.current) {
+              const worst: 'left' | 'right' = f.left.isWorst ? 'left' : 'right'
+              makeChoice(worst)
+            }
+            return next
+          })
+        }, 100)
+      }, 2500)
+      return
+    }
+
+    // Correct choice → advance
     setChoices(prev => {
       const n = [...prev]
       n[ci] = side
@@ -363,6 +387,7 @@ export function DinoChaseGame() {
     setTotalCasualties(0)
     setTimer(15)
     setLocatePhase('waiting')
+    setErrorChoice(null)
     chosenRef.current = false
     chaseProgressRef.current = 0
     waypointsRef.current = []
@@ -724,9 +749,21 @@ export function DinoChaseGame() {
         return (
           <div className="dc-result">
             <div className="dc-result-loc">{opt.label}</div>
+            <div className="dc-result-casualties">{opt.casualties} victimes</div>
           </div>
         )
       })()}
+
+      {/* ── Wrong choice error overlay ── */}
+      {errorChoice && (
+        <div className="dc-error-overlay">
+          <div className="dc-error-box">
+            <div className="dc-error-icon">✕</div>
+            <div className="dc-error-title">LE SCENARIO SELECTIONNE NE CORRESPOND PAS</div>
+            <div className="dc-error-sub">{errorChoice}</div>
+          </div>
+        </div>
+      )}
 
       {/* ── Locate overlay ── */}
       {step.type === 'locate' && (

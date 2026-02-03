@@ -9,6 +9,7 @@ import { CameraPublique2Page } from './pages/cameraPublique2'
 import { VitalsPage } from './pages/vitals'
 import { RetranscriptionDirectPage } from './pages/retranscriptionDirect'
 import { DinoChaseGame } from './pages/dinoChase'
+import { QuestionnairePage } from './pages/questionnaire'
 import './App.css'
 
 function AppRoutes() {
@@ -22,6 +23,7 @@ function AppRoutes() {
       <Route path="/vitals" element={<VitalsPage />} />
       <Route path="/retranscription-direct" element={<RetranscriptionDirectPage />} />
       <Route path="/dino-chase" element={<DinoChaseGame />} />
+      <Route path="/questionnaire" element={<QuestionnairePage />} />
       <Route path="/" element={<Navigate to="/admin" />} />
     </Routes>
   )

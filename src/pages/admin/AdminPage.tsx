@@ -3,9 +3,8 @@ import { useApp } from '../../shared/context/AppContext'
 import './AdminPage.css'
 
 const PHASE_LABELS: Record<number, string> = {
-  0: 'Veille',
+  0: 'Normal',
   1: 'Signal Erreur',
-  2: 'Post-Erreur',
 }
 
 const AUDIO_TRACKS = [
@@ -107,7 +106,7 @@ export function AdminPage() {
             >
               Ecran Noir
             </button>
-            {[0, 1, 2].map(p => (
+            {[0, 1].map(p => (
               <button
                 key={p}
                 className={`btn btn-phase ${currentPhase === p ? 'active' : ''}`}
