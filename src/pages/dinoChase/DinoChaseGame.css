@@ -526,6 +526,14 @@
   animation: dc-dino-pulse2 1.5s ease-in-out infinite 0.2s;
 }
 
+.dc-pursuer-ring1 {
+  animation: dc-pursuer-pulse1 1.8s ease-in-out infinite;
+}
+
+.dc-pursuer-ring2 {
+  animation: dc-pursuer-pulse2 1.8s ease-in-out infinite 0.3s;
+}
+
 .dc-ant-ring1 {
   animation: dc-ant-pulse 2s ease-in-out infinite;
 }
@@ -606,6 +614,16 @@
 @keyframes dc-dino-pulse2 {
   0%, 100% { opacity: 0.25; }
   50% { opacity: 0.5; }
+}
+
+@keyframes dc-pursuer-pulse1 {
+  0%, 100% { opacity: 0.1; }
+  50% { opacity: 0.3; }
+}
+
+@keyframes dc-pursuer-pulse2 {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.45; }
 }
 
 @keyframes dc-ant-pulse {
