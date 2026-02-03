@@ -1,0 +1,37 @@
+.vitals-page {
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.vitals-header {
+  text-align: center;
+  padding: 1.5rem 1rem 0.5rem;
+  flex-shrink: 0;
+}
+
+.vitals-title {
+  font-family: 'Handjet', cursive;
+  color: #fff;
+  font-size: 3rem;
+  font-weight: 900;
+  margin: 0;
+}
+
+.vitals-subtitle {
+  color: #94a3b8;
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin: 0.25rem 0 0;
+}
+
+.vitals-cards {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 0;
+}

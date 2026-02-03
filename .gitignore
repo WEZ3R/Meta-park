@@ -3,3 +3,9 @@ dist/
 .DS_Store
 *.log
 .env
+
+# Large video files (exceed GitHub 100MB limit)
+public/videos/Parc - Caméra 05.mp4
+public/videos/Parc - Caméra 06.mp4
+public/videos/Parc - Caméra 07.mp4
+public/videos/Parc - Caméra 08.mp4

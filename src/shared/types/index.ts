@@ -1,8 +1,11 @@
 export interface ServerStatus {
   isShutdown: boolean
+  isBlackScreen: boolean
   currentCamera: number
   startTime: number
   serverTime: number
+  vitals: boolean[]
+  phase: number
 }
 
 export interface AppState {

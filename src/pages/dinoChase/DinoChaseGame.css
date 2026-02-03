@@ -1,0 +1,662 @@
+/* ═══════════════════════════════════════════════════════
+   DINO CHASE GAME — iPad Landscape (1024x768)
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Base ─────────────────────────────────────────────── */
+
+.dc-game {
+  position: fixed;
+  inset: 0;
+  background: #070b14;
+  overflow: hidden;
+  font-family: 'Handjet', monospace;
+  color: #e2e8f0;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+}
+
+.dc-game::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(100, 116, 139, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(100, 116, 139, 0.07) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.dc-game::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.02) 2px,
+    rgba(0, 0, 0, 0.02) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── SVG Map ──────────────────────────────────────────── */
+
+.dc-map {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+}
+
+/* ── Header ───────────────────────────────────────────── */
+
+.dc-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 24px;
+  z-index: 10;
+  background: linear-gradient(to bottom, rgba(7, 11, 20, 0.92), transparent);
+  pointer-events: none;
+}
+
+.dc-header-title {
+  font-size: 22px;
+  font-weight: bold;
+  letter-spacing: 3px;
+  color: #64748b;
+}
+
+/* ── Visitor counter ──────────────────────────────────── */
+
+.dc-visitors {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.dc-visitors-label {
+  font-size: 15px;
+  color: #64748b;
+  letter-spacing: 2px;
+}
+
+.dc-visitors-num {
+  font-size: 34px;
+  font-weight: bold;
+  color: #ef4444;
+  text-shadow: 0 0 16px rgba(239, 68, 68, 0.4);
+  letter-spacing: 1px;
+  min-width: 50px;
+  text-align: right;
+  transition: color 0.2s;
+}
+
+.dc-visitors-flash {
+  animation: dc-num-flash 0.7s ease;
+}
+
+@keyframes dc-num-flash {
+  0% { color: #ef4444; text-shadow: 0 0 16px rgba(239, 68, 68, 0.4); }
+  25% { color: #ff0000; text-shadow: 0 0 30px rgba(255, 0, 0, 0.8); transform: scale(1.12); }
+  100% { color: #ef4444; text-shadow: 0 0 16px rgba(239, 68, 68, 0.4); transform: scale(1); }
+}
+
+/* ── Timer ────────────────────────────────────────────── */
+
+.dc-timer {
+  position: absolute;
+  top: 56px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.dc-timer-track {
+  width: min(55vw, 500px);
+  height: 7px;
+  background: rgba(30, 41, 59, 0.7);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.dc-timer-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.1s linear, background-color 0.3s;
+}
+
+.dc-timer-text {
+  font-size: 20px;
+  color: #94a3b8;
+  letter-spacing: 1px;
+}
+
+.dc-timer-crit {
+  color: #ef4444;
+  animation: dc-blink-fast 0.4s ease-in-out infinite;
+}
+
+/* ── Choice Buttons ───────────────────────────────────── */
+
+.dc-choices {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  gap: 24px;
+  z-index: 20;
+  animation: dc-slide-up 0.35s ease-out;
+}
+
+.dc-choice-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 22px 16px;
+  min-height: 120px;
+  background: rgba(15, 23, 42, 0.92);
+  border: 2px solid #334155;
+  border-radius: 16px;
+  color: #e2e8f0;
+  font-family: 'Handjet', monospace;
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.2s, background-color 0.2s;
+  -webkit-tap-highlight-color: transparent;
+  text-align: center;
+  backdrop-filter: blur(8px);
+}
+
+.dc-choice-btn:active {
+  transform: scale(0.96);
+  border-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.dc-choice-arrow {
+  font-size: 28px;
+  color: #64748b;
+}
+
+.dc-choice-label {
+  font-size: 22px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: #e2e8f0;
+}
+
+.dc-choice-desc {
+  font-size: 14px;
+  color: #94a3b8;
+  max-width: 280px;
+}
+
+.dc-choice-left,
+.dc-choice-right {
+  border-color: #475569;
+}
+
+/* ── Urgency Border ───────────────────────────────────── */
+
+.dc-urgency {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 30;
+  animation: dc-urgency-pulse var(--dc-urgency-speed, 1s) ease-in-out infinite;
+}
+
+@keyframes dc-urgency-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+/* ── Choice Result ────────────────────────────────────── */
+
+.dc-result {
+  position: absolute;
+  bottom: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.95);
+  border: 2px solid #ef4444;
+  border-radius: 14px;
+  padding: 20px 48px;
+  text-align: center;
+  z-index: 25;
+  animation: dc-pop-in 0.3s ease-out;
+  backdrop-filter: blur(8px);
+}
+
+.dc-result-loc {
+  font-size: 22px;
+  color: #ef4444;
+  font-weight: bold;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.dc-result-cas {
+  font-size: 28px;
+  font-weight: bold;
+  color: #ef4444;
+  text-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
+}
+
+/* ── Locate Overlay ───────────────────────────────────── */
+
+.dc-locate {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(7, 11, 20, 0.96);
+  z-index: 50;
+  animation: dc-fade-in 0.5s ease;
+  transition: opacity 0.5s ease;
+}
+
+.dc-locate-found {
+  opacity: 0;
+  transition: opacity 0.8s ease 0.8s;
+}
+
+.dc-locate-icon {
+  margin-bottom: 20px;
+}
+
+.dc-locate-scanning {
+  animation: dc-pulse-scale 0.8s ease-in-out infinite;
+}
+
+.dc-locate-title {
+  font-size: 32px;
+  font-weight: bold;
+  color: #94a3b8;
+  letter-spacing: 4px;
+  margin-bottom: 8px;
+}
+
+.dc-locate-sub {
+  font-size: 20px;
+  color: #64748b;
+  letter-spacing: 2px;
+  margin-bottom: 32px;
+}
+
+.dc-locate-btn {
+  padding: 16px 56px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 2px solid #ef4444;
+  border-radius: 12px;
+  color: #ef4444;
+  font-family: 'Handjet', monospace;
+  font-size: 22px;
+  font-weight: bold;
+  letter-spacing: 3px;
+  cursor: pointer;
+  transition: transform 0.15s, background-color 0.2s;
+  -webkit-tap-highlight-color: transparent;
+  animation: dc-btn-pulse 2s ease-in-out infinite;
+}
+
+.dc-locate-btn:active {
+  transform: scale(0.96);
+  background: rgba(239, 68, 68, 0.15);
+}
+
+@keyframes dc-btn-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.3); }
+  50% { box-shadow: 0 0 20px 4px rgba(239, 68, 68, 0.15); }
+}
+
+.dc-locate-status {
+  font-size: 24px;
+  color: #ef4444;
+  letter-spacing: 2px;
+}
+
+.dc-dots::after {
+  content: '';
+  animation: dc-loading-dots 1.5s steps(4, end) infinite;
+}
+
+@keyframes dc-loading-dots {
+  0% { content: ''; }
+  25% { content: '.'; }
+  50% { content: '..'; }
+  75% { content: '...'; }
+}
+
+.dc-locate-found-text {
+  font-size: 36px;
+  font-weight: bold;
+  color: #ef4444;
+  text-shadow: 0 0 30px rgba(239, 68, 68, 0.5);
+  letter-spacing: 4px;
+  margin-bottom: 8px;
+  animation: dc-fade-in 0.3s ease;
+}
+
+.dc-locate-found-zone {
+  font-size: 18px;
+  color: #94a3b8;
+  letter-spacing: 2px;
+  animation: dc-fade-in 0.3s ease 0.2s both;
+}
+
+/* ── Signal Lost (Finale) ─────────────────────────────── */
+
+.dc-signal-lost {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  animation: dc-fade-in 0.6s ease;
+}
+
+.dc-static-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    rgba(7, 11, 20, 0.94);
+  z-index: 0;
+}
+
+.dc-static-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(239, 68, 68, 0.02) 3px,
+    rgba(239, 68, 68, 0.02) 6px
+  );
+  animation: dc-static-scroll 0.3s linear infinite;
+}
+
+@keyframes dc-static-scroll {
+  from { transform: translateY(0); }
+  to { transform: translateY(6px); }
+}
+
+.dc-static-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(239, 68, 68, 0.015) 2%,
+    transparent 4%
+  );
+  animation: dc-static-flicker 0.15s steps(2) infinite;
+}
+
+@keyframes dc-static-flicker {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.dc-signal-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.dc-signal-icon {
+  margin-bottom: 16px;
+  animation: dc-glitch-shake 0.2s linear infinite;
+}
+
+@keyframes dc-glitch-shake {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-2px, 1px); }
+  50% { transform: translate(1px, -1px); }
+  75% { transform: translate(-1px, -2px); }
+  100% { transform: translate(0, 0); }
+}
+
+.dc-signal-title {
+  font-size: 48px;
+  font-weight: bold;
+  color: #ef4444;
+  text-shadow: 0 0 30px rgba(239, 68, 68, 0.5);
+  letter-spacing: 6px;
+  margin-bottom: 10px;
+  animation: dc-glitch-text 3s ease-in-out infinite;
+}
+
+@keyframes dc-glitch-text {
+  0%, 90%, 100% { opacity: 1; transform: translateX(0); }
+  92% { opacity: 0.8; transform: translateX(-3px); }
+  94% { opacity: 1; transform: translateX(2px); }
+  96% { opacity: 0.7; transform: translateX(-1px); }
+  98% { opacity: 1; transform: translateX(0); }
+}
+
+.dc-signal-sub {
+  font-size: 18px;
+  color: #94a3b8;
+  letter-spacing: 2px;
+  margin-bottom: 28px;
+}
+
+.dc-signal-visitors {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 32px;
+}
+
+.dc-signal-visitors-label {
+  font-size: 15px;
+  color: #64748b;
+  letter-spacing: 2px;
+}
+
+.dc-signal-visitors-num {
+  font-size: 52px;
+  font-weight: bold;
+  color: #ef4444;
+  text-shadow: 0 0 24px rgba(239, 68, 68, 0.5);
+  line-height: 1;
+}
+
+.dc-restart {
+  padding: 14px 48px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 2px solid #ef4444;
+  border-radius: 12px;
+  color: #ef4444;
+  font-family: 'Handjet', monospace;
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 3px;
+  cursor: pointer;
+  transition: transform 0.15s, background-color 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.dc-restart:active {
+  transform: scale(0.96);
+  background: rgba(239, 68, 68, 0.15);
+}
+
+/* ── SVG Animations ───────────────────────────────────── */
+
+.dc-pulse-ring {
+  animation: dc-ring-expand 1.2s ease-out infinite;
+}
+
+.dc-dino-ring1 {
+  animation: dc-dino-pulse1 1.5s ease-in-out infinite;
+}
+
+.dc-dino-ring2 {
+  animation: dc-dino-pulse2 1.5s ease-in-out infinite 0.2s;
+}
+
+.dc-pursuer-ring1 {
+  animation: dc-pursuer-pulse1 1.8s ease-in-out infinite;
+}
+
+.dc-pursuer-ring2 {
+  animation: dc-pursuer-pulse2 1.8s ease-in-out infinite 0.3s;
+}
+
+.dc-ant-ring1 {
+  animation: dc-ant-pulse 2s ease-in-out infinite;
+}
+
+.dc-ant-ring2 {
+  animation: dc-ant-pulse 2s ease-in-out infinite 0.5s;
+}
+
+.dc-blink {
+  animation: dc-blink-slow 1s ease-in-out infinite;
+}
+
+.dc-fade-in {
+  animation: dc-fade-in 0.4s ease;
+}
+
+/* Scanning rings on map */
+.dc-scan-ring {
+  animation: dc-scan-expand 1.8s ease-out infinite;
+}
+
+.dc-scan-ring-2 {
+  animation-delay: 0.6s;
+}
+
+.dc-scan-ring-3 {
+  animation-delay: 1.2s;
+}
+
+@keyframes dc-scan-expand {
+  0% { r: 10; opacity: 0.6; }
+  100% { r: 100; opacity: 0; }
+}
+
+/* Radar spin for locate icon */
+.dc-spin {
+  transform-origin: 40px 40px;
+  animation: dc-spin-rotate 1.5s linear infinite;
+}
+
+@keyframes dc-spin-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ── General Keyframes ────────────────────────────────── */
+
+@keyframes dc-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes dc-slide-up {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes dc-pop-in {
+  from { opacity: 0; transform: translateX(-50%) scale(0.9); }
+  to { opacity: 1; transform: translateX(-50%) scale(1); }
+}
+
+@keyframes dc-pulse-scale {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+@keyframes dc-ring-expand {
+  0% { r: 12; opacity: 0.5; }
+  100% { r: 28; opacity: 0; }
+}
+
+@keyframes dc-dino-pulse1 {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 0.35; }
+}
+
+@keyframes dc-dino-pulse2 {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes dc-pursuer-pulse1 {
+  0%, 100% { opacity: 0.1; }
+  50% { opacity: 0.3; }
+}
+
+@keyframes dc-pursuer-pulse2 {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.45; }
+}
+
+@keyframes dc-ant-pulse {
+  0%, 100% { opacity: 0.15; r: 20; }
+  50% { opacity: 0.4; r: 26; }
+}
+
+@keyframes dc-blink-slow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+@keyframes dc-blink-fast {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}
+
+/* ── Portrait Warning ─────────────────────────────────── */
+
+@media (orientation: portrait) {
+  .dc-game::before {
+    content: 'Veuillez pivoter votre tablette en mode paysage';
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #070b14;
+    color: #94a3b8;
+    font-size: 24px;
+    text-align: center;
+    padding: 40px;
+    z-index: 999;
+    letter-spacing: 1px;
+  }
+}
