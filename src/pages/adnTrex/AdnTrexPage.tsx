@@ -14,9 +14,5 @@ export function AdnTrexPage() {
     return <ScreensaverVideo videoSrc="/videos/ERRORSIGNAL.mp4" />
   }
 
-  if (phase === 2) {
-    return <ScreensaverVideo videoSrc="/videos/AfficheT-rex.mp4" />
-  }
-
-  return <ScreensaverVideo videoSrc="/videos/Signal 1.mp4" />
+  return <ScreensaverVideo videoSrc="/videos/AfficheT-rex.mp4" />
 }

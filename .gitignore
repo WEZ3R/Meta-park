@@ -4,8 +4,12 @@ dist/
 *.log
 .env
 
-# Large video files (exceed GitHub 100MB limit)
+# Large video files
 public/videos/Parc - Caméra 05.mp4
 public/videos/Parc - Caméra 06.mp4
 public/videos/Parc - Caméra 07.mp4
 public/videos/Parc - Caméra 08.mp4
+public/videos/camera-1.mp4
+public/videos/camera-2.mp4
+public/videos/camera-3.mp4
+public/videos/camera-4.mp4

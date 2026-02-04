@@ -1,6 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import path from 'path'
+import fs from 'fs'
 import { fileURLToPath } from 'url'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -20,6 +21,30 @@ let state = {
 }
 
 const PASSWORD = '1234'
+
+// Questionnaire stats: { [questionId]: { total, correct } }
+const STATS_FILE = path.join(__dirname, 'data/questionnaire-stats.json')
+
+function loadStats() {
+  try {
+    if (fs.existsSync(STATS_FILE)) {
+      return JSON.parse(fs.readFileSync(STATS_FILE, 'utf-8'))
+    }
+  } catch (e) {
+    console.error('Failed to load questionnaire stats:', e)
+  }
+  return {}
+}
+
+function saveStats() {
+  try {
+    fs.writeFileSync(STATS_FILE, JSON.stringify(questionnaireStats, null, 2))
+  } catch (e) {
+    console.error('Failed to save questionnaire stats:', e)
+  }
+}
+
+let questionnaireStats = loadStats()
 
 // Middleware
 app.use(cors())
@@ -91,6 +116,33 @@ app.post('/api/setBlackScreen', (req, res) => {
   } else {
     res.status(400).json({ error: 'blackScreen must be a boolean' })
   }
+})
+
+// Questionnaire submit
+app.post('/api/questionnaire/submit', (req, res) => {
+  const { results } = req.body
+  if (!results || typeof results !== 'object') {
+    return res.status(400).json({ error: 'results must be an object' })
+  }
+  for (const [id, correct] of Object.entries(results)) {
+    if (!questionnaireStats[id]) {
+      questionnaireStats[id] = { total: 0, correct: 0 }
+    }
+    questionnaireStats[id].total++
+    if (correct) questionnaireStats[id].correct++
+  }
+  saveStats()
+  res.json({ success: true, stats: questionnaireStats })
+})
+
+app.get('/api/questionnaire/stats', (req, res) => {
+  res.json({ stats: questionnaireStats })
+})
+
+app.post('/api/questionnaire/reset', (req, res) => {
+  questionnaireStats = {}
+  saveStats()
+  res.json({ success: true })
 })
 
 app.post('/api/login', (req, res) => {

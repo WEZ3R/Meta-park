@@ -55,6 +55,15 @@ export const api = {
     return res.json()
   },
 
+  submitQuestionnaire: async (results: Record<number, boolean>): Promise<{ success: boolean; stats: Record<number, { total: number; correct: number }> }> => {
+    const res = await fetch(`${API_BASE}/api/questionnaire/submit`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ results })
+    })
+    return res.json()
+  },
+
   login: async (password: string): Promise<{ success: boolean }> => {
     const res = await fetch(`${API_BASE}/api/login`, {
       method: 'POST',

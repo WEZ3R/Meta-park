@@ -1,16 +1,19 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AppProvider } from "./shared/context/AppContext";
-import { AuthProvider } from "./shared/context/AuthContext";
-import { AdminPage } from "./pages/admin";
-import { TestNeutralisantPage } from "./pages/testNeutralisant";
-import { AdnTrexPage } from "./pages/adnTrex";
-import { CameraPublique1Page } from "./pages/cameraPublique1";
-import { CameraPublique2Page } from "./pages/cameraPublique2";
-import { VitalsPage } from "./pages/vitals";
-import { RetranscriptionDirectPage } from "./pages/retranscriptionDirect";
-import { DinoChaseGame } from "./pages/dinoChase";
-import "./App.css";
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { AppProvider } from './shared/context/AppContext'
+import { AuthProvider } from './shared/context/AuthContext'
+import { AdminPage } from './pages/admin'
+import { TestNeutralisantPage } from './pages/testNeutralisant'
+import { AdnTrexPage } from './pages/adnTrex'
+import { CameraPublique1Page } from './pages/cameraPublique1'
+import { CameraPublique2Page } from './pages/cameraPublique2'
+import { VitalsPage } from './pages/vitals'
+import { RetranscriptionDirectPage } from './pages/retranscriptionDirect'
+import { DinoChaseGame } from './pages/dinoChase'
+import { QuestionnairePage } from './pages/questionnaire'
+import { LogsPage } from './pages/logs'
 import { BatteryLabo } from "./pages/battery-labo";
+import './App.css'
+
 
 function AppRoutes() {
   return (
@@ -26,6 +29,8 @@ function AppRoutes() {
         element={<RetranscriptionDirectPage />}
       />
       <Route path="/dino-chase" element={<DinoChaseGame />} />
+      <Route path="/questionnaire" element={<QuestionnairePage />} />
+      <Route path="/logs" element={<LogsPage />} />
       <Route path="/" element={<Navigate to="/admin" />} />
       <Route path="/battery-labo" element={<BatteryLabo />} />
     </Routes>

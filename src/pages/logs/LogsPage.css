@@ -1,0 +1,234 @@
+.logs-page {
+  width: 100vw;
+  height: 100vh;
+  background-color: #0a0e1a;
+  font-family: 'Handjet', monospace;
+  color: #c8d6e5;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logs-container {
+  width: 95%;
+  max-width: 1200px;
+  height: 92vh;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  border-radius: 6px;
+  background: rgba(10, 14, 26, 0.95);
+  box-shadow:
+    0 0 30px rgba(56, 189, 248, 0.05),
+    inset 0 0 60px rgba(0, 0, 0, 0.3);
+}
+
+/* ── Header ────────────────────────────────────────────── */
+
+.logs-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(56, 189, 248, 0.15);
+  background: rgba(56, 189, 248, 0.04);
+}
+
+.logs-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logs-prompt {
+  font-size: 1.3rem;
+  color: #38bdf8;
+  font-weight: 300;
+}
+
+.logs-title {
+  font-size: 1.6rem;
+  font-weight: 500;
+  letter-spacing: 3px;
+  margin: 0;
+  color: #e2e8f0;
+}
+
+.logs-header-right {
+  display: flex;
+  align-items: center;
+}
+
+.logs-count {
+  font-size: 1.1rem;
+  color: #64748b;
+  letter-spacing: 1px;
+}
+
+/* ── Search ────────────────────────────────────────────── */
+
+.logs-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-bottom: 1px solid rgba(56, 189, 248, 0.1);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.logs-search-icon {
+  font-size: 1.3rem;
+  color: #475569;
+}
+
+.logs-search-input {
+  flex: 1;
+  font-family: 'Handjet', monospace;
+  font-size: 1.2rem;
+  font-weight: 400;
+  letter-spacing: 1px;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #e2e8f0;
+  padding: 4px 0;
+}
+
+.logs-search-input::placeholder {
+  color: #475569;
+}
+
+.logs-search-clear {
+  font-family: 'Handjet', monospace;
+  font-size: 1.1rem;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 2px 8px;
+  transition: all 0.15s ease;
+}
+
+.logs-search-clear:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+/* ── Table ─────────────────────────────────────────────── */
+
+.logs-table-wrap {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(56, 189, 248, 0.2) transparent;
+}
+
+.logs-table-wrap::-webkit-scrollbar {
+  width: 6px;
+}
+
+.logs-table-wrap::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.logs-table-wrap::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.2);
+  border-radius: 3px;
+}
+
+.logs-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.logs-th {
+  position: sticky;
+  top: 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+  letter-spacing: 2px;
+  color: #38bdf8;
+  text-align: left;
+  padding: 10px 16px;
+  background: #0d1224;
+  border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+  white-space: nowrap;
+  z-index: 2;
+}
+
+.logs-th-idx {
+  width: 50px;
+  text-align: center;
+}
+
+.logs-th-date {
+  width: 120px;
+}
+
+.logs-th-time {
+  width: 80px;
+}
+
+.logs-th-author {
+  width: 110px;
+}
+
+/* Rows */
+
+.logs-row {
+  transition: background 0.1s ease;
+}
+
+.logs-row:hover {
+  background: rgba(56, 189, 248, 0.04);
+}
+
+.logs-td {
+  font-size: 1.15rem;
+  font-weight: 400;
+  padding: 8px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  letter-spacing: 0.5px;
+}
+
+.logs-td-idx {
+  text-align: center;
+  color: #ffffff;
+  font-size: 1rem;
+}
+
+.logs-td-event {
+  color: #ffffff;
+}
+
+.logs-td-date,
+.logs-td-time {
+  color: #ffffff;
+}
+
+.logs-td-author {
+  color: #ffffff;
+}
+
+/* Empty state */
+
+.logs-empty {
+  text-align: center;
+  padding: 40px 20px;
+  font-size: 1.3rem;
+  color: #475569;
+  letter-spacing: 2px;
+}
+
+/* ── Footer ────────────────────────────────────────────── */
+
+.logs-footer {
+  padding: 10px 20px;
+  border-top: 1px solid rgba(56, 189, 248, 0.1);
+  font-size: 1rem;
+  color: #334155;
+  letter-spacing: 1px;
+  text-align: center;
+}
