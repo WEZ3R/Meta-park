@@ -155,9 +155,17 @@ export function TestNeutralisantPage() {
 
   return (
     <div className="test-neutralisant-page">
+      <h1 className="tn-page-title">SYNTHÉTISATION DE NEUTRALISANT</h1>
+
       {/* Left side – Sequence assembly */}
       <div className="tn-left">
-        <h1 className="tn-input-title">SÉQUENCE GÉNÉTIQUE EN COURS</h1>
+        <div className="tn-legend">
+          <span className="tn-legend-item tn-legend--correct">Correct &amp; bien placé</span>
+          <span className="tn-legend-item tn-legend--misplaced">Correct mais mal placé</span>
+          <span className="tn-legend-item tn-legend--wrong">Incorrect</span>
+        </div>
+
+        <h2 className="tn-input-title">SÉQUENCE GÉNÉTIQUE EN COURS</h2>
 
         {/* Slots */}
         <div className="tn-slots">

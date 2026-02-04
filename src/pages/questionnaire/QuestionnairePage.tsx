@@ -273,6 +273,15 @@ const POINTS: Record<number, number> = {
 
 const MAX_SCORE = QUESTIONS.reduce((sum, q) => sum + (POINTS[q.id] ?? 3), 0)
 
+const SECTIONS = [
+  { label: 'FACILE', slug: 'facile', ids: [1, 2, 3, 6, 7, 8, 10, 11, 14, 18, 22] },
+  { label: 'MOYEN', slug: 'moyen', ids: [5, 13, 16, 19] },
+  { label: 'DIFFICILE', slug: 'difficile', ids: [4, 9, 15, 21] },
+  { label: 'TRÈS DIFFICILE', slug: 'tres-difficile', ids: [12, 17, 20, 23] },
+]
+
+const QUESTIONS_BY_ID = new Map(QUESTIONS.map(q => [q.id, q]))
+
 // ═══════════════════════════════════════════════════════════
 // VALIDATION
 // ═══════════════════════════════════════════════════════════
@@ -403,118 +412,93 @@ export function QuestionnairePage() {
         )}
 
         <div className="q-list">
-          {QUESTIONS.map(q => {
-            const answer = answers[q.id]
-            const isCorrect = validated ? checkAnswer(q, answer ?? getDefaultValue(q)) : null
-            const stat = stats?.[q.id]
-            const pct = stat && stat.total > 0 ? Math.round((stat.correct / stat.total) * 100) : null
+          {SECTIONS.map((section, si) => (
+            <div key={section.label}>
+              <div className={`q-section-header q-section--${section.slug}`}>
+                <span className="q-section-label">{section.label}</span>
+              </div>
 
-            return (
-              <div
-                key={q.id}
-                className={`q-item ${validated ? (isCorrect ? 'q-item--correct' : 'q-item--wrong') : ''}`}
-              >
-                <div className="q-item-header">
-                  <span className="q-item-number">{q.id}.</span>
-                  <span className="q-item-text">{q.text}</span>
-                  {validated && (
-                    <span className={`q-item-icon ${isCorrect ? 'correct' : 'wrong'}`}>
-                      {isCorrect ? '✓' : '✕'}
-                    </span>
-                  )}
-                </div>
+              {section.ids.map((id, qi) => {
+                const q = QUESTIONS_BY_ID.get(id)!
+                const globalIdx = SECTIONS.slice(0, si).reduce((s, sec) => s + sec.ids.length, 0) + qi + 1
+                const answer = answers[q.id]
+                const isCorrect = validated ? checkAnswer(q, answer ?? getDefaultValue(q)) : null
+                const stat = stats?.[q.id]
+                const pct = stat && stat.total > 0 ? Math.round((stat.correct / stat.total) * 100) : null
 
-                <div className="q-item-input">
-                  {q.type === 'time' && (
-                    <input
-                      type="time"
-                      className="q-input q-input-time"
-                      value={(answer as string) ?? ''}
-                      onChange={e => updateAnswer(q.id, e.target.value)}
-                      disabled={validated}
-                    />
-                  )}
-
-                  {q.type === 'date' && (
-                    <div className="q-date-inputs">
-                      <input
-                        type="text"
-                        className="q-input q-input-date-part"
-                        placeholder="JJ"
-                        maxLength={2}
-                        value={((answer as string) ?? '').split('/')[0] ?? ''}
-                        onChange={e => {
-                          const day = e.target.value.replace(/\D/g, '').slice(0, 2)
-                          const month = ((answer as string) ?? '').split('/')[1] ?? ''
-                          updateAnswer(q.id, `${day}/${month}`)
-                        }}
-                        disabled={validated}
-                      />
-                      <span className="q-date-sep">/</span>
-                      <input
-                        type="text"
-                        className="q-input q-input-date-part"
-                        placeholder="MM"
-                        maxLength={2}
-                        value={((answer as string) ?? '').split('/')[1] ?? ''}
-                        onChange={e => {
-                          const month = e.target.value.replace(/\D/g, '').slice(0, 2)
-                          const day = ((answer as string) ?? '').split('/')[0] ?? ''
-                          updateAnswer(q.id, `${day}/${month}`)
-                        }}
-                        disabled={validated}
-                      />
+                return (
+                  <div
+                    key={q.id}
+                    className={`q-item ${validated ? (isCorrect ? 'q-item--correct' : 'q-item--wrong') : ''}`}
+                  >
+                    <div className="q-item-header">
+                      <span className="q-item-number">{globalIdx}.</span>
+                      <span className="q-item-text">{q.text}</span>
+                      {validated && (
+                        <span className={`q-item-icon ${isCorrect ? 'correct' : 'wrong'}`}>
+                          {isCorrect ? '✓' : '✕'}
+                        </span>
+                      )}
                     </div>
-                  )}
 
-                  {q.type === 'number' && (
-                    <input
-                      type="number"
-                      className="q-input q-input-number"
-                      value={(answer as string) ?? ''}
-                      onChange={e => updateAnswer(q.id, e.target.value)}
-                      disabled={validated}
-                    />
-                  )}
-
-                  {q.type === 'select' && (
-                    <select
-                      className="q-input q-select"
-                      value={(answer as string) ?? ''}
-                      onChange={e => updateAnswer(q.id, e.target.value)}
-                      disabled={validated}
-                    >
-                      <option value="">-- Sélectionner --</option>
-                      {q.options.map(opt => (
-                        <option key={opt} value={opt}>{opt}</option>
-                      ))}
-                    </select>
-                  )}
-
-                  {q.type === 'text-multi' && (
-                    <div className="q-multi-inputs">
-                      {Array.from({ length: q.count }).map((_, i) => (
+                    <div className="q-item-input">
+                      {q.type === 'time' && (
                         <input
-                          key={i}
-                          type="text"
-                          className="q-input q-input-text"
-                          placeholder={`Prénom ${i + 1}`}
-                          value={((answer as string[]) ?? [])[i] ?? ''}
-                          onChange={e => updateMultiAnswer(q.id, i, e.target.value)}
+                          type="time"
+                          className="q-input q-input-time"
+                          value={(answer as string) ?? ''}
+                          onChange={e => updateAnswer(q.id, e.target.value)}
                           disabled={validated}
                         />
-                      ))}
-                    </div>
-                  )}
+                      )}
 
-                  {q.type === 'select-multi' && (
-                    <div className="q-multi-inputs">
-                      {Array.from({ length: q.count }).map((_, i) => (
+                      {q.type === 'date' && (
+                        <div className="q-date-inputs">
+                          <input
+                            type="text"
+                            className="q-input q-input-date-part"
+                            placeholder="JJ"
+                            maxLength={2}
+                            value={((answer as string) ?? '').split('/')[0] ?? ''}
+                            onChange={e => {
+                              const day = e.target.value.replace(/\D/g, '').slice(0, 2)
+                              const month = ((answer as string) ?? '').split('/')[1] ?? ''
+                              updateAnswer(q.id, `${day}/${month}`)
+                            }}
+                            disabled={validated}
+                          />
+                          <span className="q-date-sep">/</span>
+                          <input
+                            type="text"
+                            className="q-input q-input-date-part"
+                            placeholder="MM"
+                            maxLength={2}
+                            value={((answer as string) ?? '').split('/')[1] ?? ''}
+                            onChange={e => {
+                              const month = e.target.value.replace(/\D/g, '').slice(0, 2)
+                              const day = ((answer as string) ?? '').split('/')[0] ?? ''
+                              updateAnswer(q.id, `${day}/${month}`)
+                            }}
+                            disabled={validated}
+                          />
+                        </div>
+                      )}
+
+                      {q.type === 'number' && (
+                        <input
+                          type="number"
+                          className="q-input q-input-number"
+                          value={(answer as string) ?? ''}
+                          onChange={e => updateAnswer(q.id, e.target.value)}
+                          disabled={validated}
+                        />
+                      )}
+
+                      {q.type === 'select' && (
                         <select
-                          key={i}
                           className="q-input q-select"
-                          value={((answer as string[]) ?? [])[i] ?? ''}
-                          onChange={e => updateMultiAnswer(q.id, i, e.target.value)}
+                          value={(answer as string) ?? ''}
+                          onChange={e => updateAnswer(q.id, e.target.value)}
                           disabled={validated}
                         >
                           <option value="">-- Sélectionner --</option>
@@ -522,17 +506,52 @@ export function QuestionnairePage() {
                             <option key={opt} value={opt}>{opt}</option>
                           ))}
                         </select>
-                      ))}
-                    </div>
-                  )}
+                      )}
 
-                  {validated && pct !== null && (
-                    <span className="q-item-pct">{pct}% des joueurs ont trouvé</span>
-                  )}
-                </div>
-              </div>
-            )
-          })}
+                      {q.type === 'text-multi' && (
+                        <div className="q-multi-inputs">
+                          {Array.from({ length: q.count }).map((_, i) => (
+                            <input
+                              key={i}
+                              type="text"
+                              className="q-input q-input-text"
+                              placeholder={`Prénom ${i + 1}`}
+                              value={((answer as string[]) ?? [])[i] ?? ''}
+                              onChange={e => updateMultiAnswer(q.id, i, e.target.value)}
+                              disabled={validated}
+                            />
+                          ))}
+                        </div>
+                      )}
+
+                      {q.type === 'select-multi' && (
+                        <div className="q-multi-inputs">
+                          {Array.from({ length: q.count }).map((_, i) => (
+                            <select
+                              key={i}
+                              className="q-input q-select"
+                              value={((answer as string[]) ?? [])[i] ?? ''}
+                              onChange={e => updateMultiAnswer(q.id, i, e.target.value)}
+                              disabled={validated}
+                            >
+                              <option value="">-- Sélectionner --</option>
+                              {q.options.map(opt => (
+                                <option key={opt} value={opt}>{opt}</option>
+                              ))}
+                            </select>
+                          ))}
+                        </div>
+                      )}
+
+                      {validated && pct !== null && (
+                        <span className="q-item-pct">{pct}% des joueurs ont trouvé</span>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          ))}
         </div>
 
         <div className="q-actions">

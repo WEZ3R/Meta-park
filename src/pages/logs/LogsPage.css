@@ -195,48 +195,21 @@
 
 .logs-td-idx {
   text-align: center;
-  color: #475569;
+  color: #ffffff;
   font-size: 1rem;
 }
 
 .logs-td-event {
-  color: #c8d6e5;
+  color: #ffffff;
 }
 
 .logs-td-date,
 .logs-td-time {
-  color: #64748b;
+  color: #ffffff;
 }
 
 .logs-td-author {
-  color: #38bdf8;
-  opacity: 0.7;
-}
-
-/* Row variants */
-
-.logs-row--alert .logs-td-event {
-  color: #f59e0b;
-}
-
-.logs-row--alert .logs-td-idx {
-  color: #f59e0b;
-}
-
-.logs-row--death .logs-td-event {
-  color: #ef4444;
-}
-
-.logs-row--death .logs-td-idx {
-  color: #ef4444;
-}
-
-.logs-row--success .logs-td-event {
-  color: #4ade80;
-}
-
-.logs-row--success .logs-td-idx {
-  color: #4ade80;
+  color: #ffffff;
 }
 
 /* Empty state */

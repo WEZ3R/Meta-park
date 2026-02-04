@@ -20,18 +20,38 @@ const LOGS: LogEntry[] = [
   { event: 'CONNEXION AU RÉSEAU LOCAL', date: '03/06/2025', time: '17:31', author: 'SYSTÈME' },
   { event: 'ANTENNE PRINCIPALE : STATUT DÉGRADÉ', date: '03/06/2025', time: '17:31', author: 'SYSTÈME' },
   { event: 'PASSAGE EN COMMUNICATION TEXTE UNIQUEMENT', date: '03/06/2025', time: '17:32', author: 'SYSTÈME' },
+  { event: 'DIAGNOSTIC DES CAPTEURS PÉRIMÉTRIQUES', date: '03/06/2025', time: '17:32', author: 'SYSTÈME' },
+  { event: 'SYNCHRONISATION DE L\'HORLOGE INTERNE TERMINÉE', date: '03/06/2025', time: '17:33', author: 'SYSTÈME' },
+  { event: 'VÉRIFICATION DU RÉSEAU ÉLECTRIQUE : OK', date: '03/06/2025', time: '17:34', author: 'SYSTÈME' },
 
   { event: 'MISE À JOUR DU COMPTEUR VISITEURS : 20 910', date: '03/06/2025', time: '17:35', author: 'SYSTÈME' },
   { event: 'STATUT DU PARC : OUVERT AU PUBLIC', date: '03/06/2025', time: '17:35', author: 'SYSTÈME' },
   { event: 'ÉVÉNEMENT SPÉCIAL DÉTECTÉ : JOUR DE RÉOUVERTURE', date: '03/06/2025', time: '17:36', author: 'SYSTÈME' },
+  { event: 'SCAN THERMIQUE DES ENCLOS : EN COURS', date: '03/06/2025', time: '17:37', author: 'SYSTÈME' },
+  { event: 'TEMPÉRATURE ENCLOS T-90 : 28.4°C – NORMAL', date: '03/06/2025', time: '17:38', author: 'SYSTÈME' },
+  { event: 'ACTIVITÉ BIOLOGIQUE SECTEUR T : DANS LES NORMES', date: '03/06/2025', time: '17:40', author: 'SYSTÈME' },
+  { event: 'ROTATION DES ÉQUIPES DE SURVEILLANCE ENREGISTRÉE', date: '03/06/2025', time: '17:42', author: 'SYSTÈME' },
+  { event: 'DIAGNOSTIC RÉSEAU INTERNE : 14 NŒUDS ACTIFS', date: '03/06/2025', time: '17:44', author: 'SYSTÈME' },
+  { event: 'MISE À JOUR FIRMWARE CAPTEURS SECTEUR NORD', date: '03/06/2025', time: '17:46', author: 'SYSTÈME' },
 
   { event: 'VÉRIFICATION DES CAMÉRAS SECTEUR T', date: '03/06/2025', time: '17:48', author: 'SYSTÈME' },
   { event: 'CAMÉRA OUEST : SIGNAL INSTABLE', date: '03/06/2025', time: '17:49', author: 'SYSTÈME' },
+  { event: 'TENTATIVE DE STABILISATION SIGNAL CAMÉRA OUEST', date: '03/06/2025', time: '17:49', author: 'SYSTÈME' },
   { event: 'ANOMALIE VISUELLE DÉTECTÉE SUR CLÔTURE T-90', date: '03/06/2025', time: '17:50', author: 'SYSTÈME' },
   { event: 'INTÉGRITÉ DE L\'ENCLOS T-90 : COMPROMISE', date: '03/06/2025', time: '17:50', author: 'SYSTÈME' },
 
   { event: 'ALERTE SÉCURITÉ : RISQUE DE RUPTURE', date: '03/06/2025', time: '17:51', author: 'SYSTÈME' },
   { event: 'PROTOCOLE DE SURVEILLANCE RENFORCÉ ACTIVÉ', date: '03/06/2025', time: '17:51', author: 'SYSTÈME' },
+  { event: 'ENVOI RAPPORT SÉCURITÉ AU POSTE CENTRAL', date: '03/06/2025', time: '17:52', author: 'SYSTÈME' },
+  { event: 'DÉPLOIEMENT DRONES DE SURVEILLANCE SECTEUR T', date: '03/06/2025', time: '17:55', author: 'SYSTÈME' },
+
+  { event: 'MOUVEMENT INHABITUEL DÉTECTÉ – SECTEUR NORD', date: '03/06/2025', time: '18:05', author: 'SYSTÈME' },
+  { event: 'OUVERTURE ENCLOS HERBIVORES', date: '03/06/2025', time: '18:09', author: 'SYSTÈME' },
+  { event: 'ANALYSE SONORE : FRÉQUENCES BASSES ANORMALES', date: '03/06/2025', time: '18:10', author: 'SYSTÈME' },
+  { event: 'OUVERTURE ENCLOS SOIGNEURS', date: '03/06/2025', time: '18:14', author: 'SYSTÈME' },
+  { event: 'TENTATIVE DE CONTACT RADIO EXTÉRIEUR : ÉCHEC', date: '03/06/2025', time: '18:15', author: 'SYSTÈME' },
+  { event: 'PERTE SIGNAL NURSERIE', date: '03/06/2025', time: '18:16', author: 'SYSTÈME' },
+  { event: 'OUVERTURE ENCLOS CARNIVORES', date: '03/06/2025', time: '18:19', author: 'SYSTÈME' },
 
   { event: 'SUIVI DES CONSTANTES VITALES – JULIA', date: '03/06/2025', time: '18:20', author: 'SYSTÈME' },
   { event: 'CHUTE BRUTALE DU RYTHME CARDIAQUE – JULIA', date: '03/06/2025', time: '18:21', author: 'SYSTÈME' },
@@ -42,14 +62,18 @@ const LOGS: LogEntry[] = [
   { event: 'BASCULE AUTOMATIQUE EN MODE ISOLÉ', date: '03/06/2025', time: '18:23', author: 'SYSTÈME' },
 
   { event: 'RUPTURE DE CONFINEMENT CONFIRMÉE', date: '03/06/2025', time: '18:24', author: 'SYSTÈME' },
-  { event: 'ESPÈCE IDENTIFIÉE : TYRANNOSAURUS REX', date: '03/06/2025', time: '18:24', author: 'SYSTÈME' },
   { event: 'LOCALISATION INITIALE : SECTEUR NORD', date: '03/06/2025', time: '18:25', author: 'SYSTÈME' },
 
   { event: 'ACTIVATION DU PROTOCOLE D\'URGENCE AMBRE-LOCK', date: '03/06/2025', time: '18:26', author: 'SYSTÈME' },
   { event: 'LIMITATION DES ACCÈS SYSTÈME', date: '03/06/2025', time: '18:26', author: 'SYSTÈME' },
+  { event: 'VERROUILLAGE AUTOMATIQUE DES PORTES SECTEUR EST', date: '03/06/2025', time: '18:27', author: 'SYSTÈME' },
+  { event: 'ACTIVATION DES SIRÈNES D\'ÉVACUATION', date: '03/06/2025', time: '18:30', author: 'SYSTÈME' },
+  { event: 'COUPURE ALIMENTATION SECTEUR SUD', date: '03/06/2025', time: '18:45', author: 'SYSTÈME' },
+  { event: 'TENTATIVE DE REBOOT DU SERVEUR PRINCIPAL', date: '03/06/2025', time: '18:55', author: 'SYSTÈME' },
 
   { event: 'RESTAURATION PARTIELLE DU WIFI LOCAL', date: '03/06/2025', time: '19:04', author: 'SYSTÈME' },
   { event: 'REPRISE DES FLUX DE DONNÉES INTERNES', date: '03/06/2025', time: '19:05', author: 'SYSTÈME' },
+  { event: 'SCAN DES ZONES SÉCURISÉES EN COURS', date: '03/06/2025', time: '19:10', author: 'SYSTÈME' },
 
   { event: 'SUJET HOSTILE : STATUT MODIFIÉ', date: '03/06/2025', time: '19:27', author: 'SYSTÈME' },
   { event: 'ÉTAT DU SUJET : NEUTRALISÉ', date: '03/06/2025', time: '19:27', author: 'SYSTÈME' },

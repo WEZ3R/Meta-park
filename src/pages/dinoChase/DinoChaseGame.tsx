@@ -41,19 +41,19 @@ const ANTENNA: Position = { x: MX, y: 65 }
 
 const FORKS: Fork[] = [
   {
-    forkPt: { x: MX, y: 595 },
-    mergePt: { x: MX, y: 485 },
-    leftApex: { x: 250, y: 540 },
-    rightApex: { x: 774, y: 540 },
+    forkPt: { x: MX, y: 565 },
+    mergePt: { x: MX, y: 455 },
+    leftApex: { x: 140, y: 510 },
+    rightApex: { x: 884, y: 510 },
     left: {
       label: 'ENCLOS CARNIVORES',
       description: 'Zone haute securite — Personnel arme',
-      casualties: 0, isWorst: true,
+      casualties: 0, isWorst: false,
     },
     right: {
       label: 'ENCLOS HERBIVORES',
       description: 'Zone ouverte — Faible presence humaine',
-      casualties: 9, isWorst: false,
+      casualties: 9, isWorst: true,
     },
 
   },
@@ -65,12 +65,12 @@ const FORKS: Fork[] = [
     left: {
       label: 'ZONE SAFARI',
       description: 'Vehicules civils en circulation',
-      casualties: 1767, isWorst: false,
+      casualties: 1767, isWorst: true,
     },
     right: {
       label: 'ENCLOS SOIGNEURS',
       description: 'Equipe veterinaire en intervention',
-      casualties: 0, isWorst: true,
+      casualties: 0, isWorst: false,
     },
 
   },
