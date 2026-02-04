@@ -89,11 +89,16 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
       state.pressureAtStart = state.pressure;
       state.chargingStartTime = Date.now();
       state.hasExceeded = false; // Reset le flag de dépassement
-      const randomDelay = 3000 + Math.random() * 5000;
-      state.stopChargingAt = state.chargingStartTime + randomDelay;
+
+      // Délai de base entre 3-8 secondes pour aller de 0 à 100%
+      const baseDelay = 3000 + Math.random() * 5000;
+      // Ajuster le délai en fonction de la pression restante à atteindre
+      const remainingPercent = (100 - state.pressureAtStart) / 100;
+      const scaledDelay = baseDelay * remainingPercent;
+      state.stopChargingAt = state.chargingStartTime + scaledDelay;
 
       console.log(
-        `🎯 Pression départ: ${state.pressureAtStart.toFixed(1)}% - ${(randomDelay / 1000).toFixed(1)}s pour relâcher`,
+        `🎯 Pression départ: ${state.pressureAtStart.toFixed(1)}% - ${(scaledDelay / 1000).toFixed(1)}s pour relâcher`,
       );
 
       // Timer d'échec
@@ -108,7 +113,7 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
         state.warningTimer = null;
         setIsWarning(false);
         setCooldownStartTime(state.cooldownStartTime);
-      }, randomDelay);
+      }, scaledDelay);
 
       setIsWarning(true);
     } else if (isCharging && !prevIsCharging && state.hasExceeded) {
