@@ -11,7 +11,9 @@ import { RetranscriptionDirectPage } from './pages/retranscriptionDirect'
 import { DinoChaseGame } from './pages/dinoChase'
 import { QuestionnairePage } from './pages/questionnaire'
 import { LogsPage } from './pages/logs'
+import { BatteryLabo } from "./pages/battery-labo";
 import './App.css'
+
 
 function AppRoutes() {
   return (
@@ -22,13 +24,17 @@ function AppRoutes() {
       <Route path="/camera-publique-1" element={<CameraPublique1Page />} />
       <Route path="/camera-publique-2" element={<CameraPublique2Page />} />
       <Route path="/vitals" element={<VitalsPage />} />
-      <Route path="/retranscription-direct" element={<RetranscriptionDirectPage />} />
+      <Route
+        path="/retranscription-direct"
+        element={<RetranscriptionDirectPage />}
+      />
       <Route path="/dino-chase" element={<DinoChaseGame />} />
       <Route path="/questionnaire" element={<QuestionnairePage />} />
       <Route path="/logs" element={<LogsPage />} />
       <Route path="/" element={<Navigate to="/admin" />} />
+      <Route path="/battery-labo" element={<BatteryLabo />} />
     </Routes>
-  )
+  );
 }
 
 function App() {
@@ -40,7 +46,7 @@ function App() {
         </AppProvider>
       </AuthProvider>
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;
