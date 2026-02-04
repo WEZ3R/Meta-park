@@ -11,6 +11,7 @@ import { VitalsPage } from './pages/vitals'
 import { RetranscriptionDirectPage } from './pages/retranscriptionDirect'
 import { DinoChaseGame } from './pages/dinoChase'
 import { QuestionnairePage } from './pages/questionnaire'
+import { PWALauncherPage } from './pages/pwaLauncher'
 import { LogsPage } from './pages/logs'
 import { BatteryLabo } from "./pages/battery-labo";
 import './App.css'
@@ -32,7 +33,7 @@ function AppRoutes() {
       <Route path="/dino-chase" element={<DinoChaseGame />} />
       <Route path="/questionnaire" element={<QuestionnairePage />} />
       <Route path="/logs" element={<LogsPage />} />
-      <Route path="/" element={<Navigate to="/admin" />} />
+      <Route path="/" element={<PWALauncherPage />} />
       <Route path="/battery-labo" element={<BatteryLabo />} />
     </Routes>
   );

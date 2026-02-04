@@ -90,8 +90,8 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
       state.chargingStartTime = Date.now();
       state.hasExceeded = false; // Reset le flag de dépassement
 
-      // Délai de base entre 3-8 secondes pour aller de 0 à 100%
-      const baseDelay = 3000 + Math.random() * 5000;
+      // Délai fixe de 8 secondes pour la surchauffe (de 0 à 100%)
+      const baseDelay = 8000;
       // Ajuster le délai en fonction de la pression restante à atteindre
       const remainingPercent = (100 - state.pressureAtStart) / 100;
       const scaledDelay = baseDelay * remainingPercent;
@@ -198,7 +198,7 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
 
   // Cluster charge/discharge logic
   useEffect(() => {
-    const CHARGE_SPEED = 100 / 8;
+    const CHARGE_SPEED = 100 / 16; // 50% plus lent (16s pour charger complètement)
     const DISCHARGE_SPEED_NORMAL = 100 / 180; // 3 minutes
     const DISCHARGE_SPEED_SHUTDOWN = 100 / 1; // 1 seconde par batterie en shutdown
     const state = stateRef.current;

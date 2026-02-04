@@ -1,0 +1,102 @@
+.pwa-launcher {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: #0A1031;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.pwa-launcher__container {
+  text-align: center;
+  width: 100%;
+  max-width: 600px;
+}
+
+.pwa-launcher__title {
+  font-family: 'Handjet', monospace;
+  font-size: 4rem;
+  font-weight: 900;
+  color: #00d4ff;
+  margin: 0 0 10px 0;
+  text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+  letter-spacing: 0.2em;
+}
+
+.pwa-launcher__subtitle {
+  font-family: 'Handjet', monospace;
+  font-size: 1.2rem;
+  color: #5a7a9a;
+  margin: 0 0 40px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.pwa-launcher__buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.pwa-launcher__button {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 25px 30px;
+  border: 2px solid #00d4ff;
+  border-radius: 12px;
+  background: rgba(0, 212, 255, 0.05);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+}
+
+.pwa-launcher__button:hover,
+.pwa-launcher__button:active {
+  background: rgba(0, 212, 255, 0.15);
+  transform: scale(1.02);
+  box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+}
+
+.pwa-launcher__button-icon {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.pwa-launcher__button-text {
+  font-family: 'Handjet', monospace;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #00d4ff;
+  display: block;
+}
+
+.pwa-launcher__button-desc {
+  font-family: 'Handjet', monospace;
+  font-size: 1rem;
+  color: #5a7a9a;
+  display: block;
+  margin-top: 4px;
+}
+
+/* Landscape mode on tablets */
+@media (min-width: 768px) and (orientation: landscape) {
+  .pwa-launcher__buttons {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .pwa-launcher__button {
+    flex: 1;
+    max-width: 280px;
+    flex-direction: column;
+    text-align: center;
+    padding: 40px 30px;
+  }
+
+  .pwa-launcher__button-icon {
+    font-size: 4rem;
+  }
+}
