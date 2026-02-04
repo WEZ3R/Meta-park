@@ -1,6 +1,6 @@
 export interface ServerStatus {
   isShutdown: boolean
-  isBlackScreen: boolean
+  blackScreenOpacity: number // 0-100
   currentCamera: number
   startTime: number
   serverTime: number

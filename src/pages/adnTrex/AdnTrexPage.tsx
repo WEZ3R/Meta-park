@@ -6,10 +6,6 @@ export function AdnTrexPage() {
   const phase = status?.phase ?? 0
   const isShutdown = status?.isShutdown ?? false
 
-  if (status?.isBlackScreen) {
-    return <div style={{ width: '100vw', height: '100vh', background: '#000' }} />
-  }
-
   if (isShutdown || phase === 1) {
     return <ScreensaverVideo videoSrc="/videos/ERRORSIGNAL.mp4" />
   }

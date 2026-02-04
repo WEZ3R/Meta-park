@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 3001
 // Global state
 let state = {
   isShutdown: false,
-  isBlackScreen: false,
+  blackScreenOpacity: 0, // 0-100
   currentCamera: 1,
   startTime: Date.now(),
   phase: 0,
@@ -60,7 +60,7 @@ app.use('/external-videos', express.static('/Volumes/ESD-ESP_1'))
 app.get('/api/status', (req, res) => {
   res.json({
     isShutdown: state.isShutdown,
-    isBlackScreen: state.isBlackScreen,
+    blackScreenOpacity: state.blackScreenOpacity,
     currentCamera: state.currentCamera,
     startTime: state.startTime,
     serverTime: Date.now(),
@@ -109,13 +109,13 @@ app.post('/api/setVitals', (req, res) => {
   }
 })
 
-app.post('/api/setBlackScreen', (req, res) => {
-  const { blackScreen } = req.body
-  if (typeof blackScreen === 'boolean') {
-    state.isBlackScreen = blackScreen
-    res.json({ success: true, isBlackScreen: state.isBlackScreen })
+app.post('/api/setBlackScreenOpacity', (req, res) => {
+  const { opacity } = req.body
+  if (typeof opacity === 'number' && opacity >= 0 && opacity <= 100) {
+    state.blackScreenOpacity = opacity
+    res.json({ success: true, blackScreenOpacity: state.blackScreenOpacity })
   } else {
-    res.status(400).json({ error: 'blackScreen must be a boolean' })
+    res.status(400).json({ error: 'opacity must be a number between 0 and 100' })
   }
 })
 

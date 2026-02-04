@@ -21,7 +21,7 @@ const AUDIO_TRACKS = [
 ]
 
 export function AdminPage() {
-  const { status, updateShutdown, setBlackScreen, setPhase, setVitals } = useApp()
+  const { status, updateShutdown, setBlackScreenOpacity, setPhase, setVitals } = useApp()
   const currentPhase = status?.phase ?? 0
   const vitals = status?.vitals ?? [true, true, true]
   const [playingIndex, setPlayingIndex] = useState<number | null>(null)
@@ -101,10 +101,10 @@ export function AdminPage() {
           </div>
           <div className="phase-buttons">
             <button
-              className={`btn ${status?.isBlackScreen ? 'btn-error' : 'btn-phase'} ${status?.isBlackScreen ? 'active' : ''}`}
-              onClick={() => setBlackScreen(!status?.isBlackScreen)}
+              className={`btn ${(status?.blackScreenOpacity ?? 0) > 0 ? 'btn-error' : 'btn-phase'} ${(status?.blackScreenOpacity ?? 0) > 0 ? 'active' : ''}`}
+              onClick={() => setBlackScreenOpacity((status?.blackScreenOpacity ?? 0) > 0 ? 0 : 100)}
             >
-              Ecran Noir
+              Ecran Noir ({status?.blackScreenOpacity ?? 0}%)
             </button>
             {[0, 1].map(p => (
               <button

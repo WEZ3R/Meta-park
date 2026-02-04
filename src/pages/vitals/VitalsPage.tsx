@@ -105,6 +105,7 @@ export function VitalsPage() {
     }
   }, [])
 
+
   return (
     <div className="vitals-page">
       <video
