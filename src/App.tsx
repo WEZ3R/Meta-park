@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AppProvider } from './shared/context/AppContext'
 import { AuthProvider } from './shared/context/AuthContext'
+import { BlackScreen } from './shared/components'
 import { AdminPage } from './pages/admin'
 import { TestNeutralisantPage } from './pages/testNeutralisant'
 import { AdnTrexPage } from './pages/adnTrex'
@@ -43,6 +44,7 @@ function App() {
       <AuthProvider>
         <AppProvider>
           <AppRoutes />
+          <BlackScreen />
         </AppProvider>
       </AuthProvider>
     </BrowserRouter>

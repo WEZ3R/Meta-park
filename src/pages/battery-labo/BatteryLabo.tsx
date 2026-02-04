@@ -1,12 +1,10 @@
-import { useEffect, useRef } from "react";
 import "./BatteryLabo.css";
 import { useBatteryLabo } from "./useBatteryLabo";
 import { Cluster } from "./Cluster";
 import { useApp } from "../../shared/context/AppContext";
 
 export function BatteryLabo() {
-  const { setBlackScreen, status } = useApp();
-  const prevAllDepletedRef = useRef(false);
+  const { status } = useApp();
   const isShutdown = status?.isShutdown ?? false;
 
   const {
@@ -17,25 +15,8 @@ export function BatteryLabo() {
     colorPhase,
     cooldownStartTime,
     pressure,
-    allDepleted,
     showUrgentPopup,
   } = useBatteryLabo(isShutdown);
-
-  // Console log de l'état blackScreen
-  useEffect(() => {
-    console.log(`📺 BlackScreen état: ${status?.isBlackScreen}`);
-  }, [status?.isBlackScreen]);
-
-  // Déclencher blackScreen quand toutes les batteries sont vides
-  useEffect(() => {
-    // Déclencher seulement sur la transition false -> true
-    if (allDepleted && !prevAllDepletedRef.current) {
-      console.log("🔴 Toutes les batteries sont vides ! BlackScreen activé.");
-      console.log("📺 BlackScreen passe en TRUE");
-      setBlackScreen(true);
-    }
-    prevAllDepletedRef.current = allDepleted;
-  }, [allDepleted, setBlackScreen]);
 
   // Déterminer le message de pression
   const getPressureMessage = () => {

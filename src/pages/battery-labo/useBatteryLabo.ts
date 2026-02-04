@@ -39,7 +39,8 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
     hasExceeded: false, // true si on a dépassé le seuil (trop tard)
   });
 
-  const hasReachedThresholdRef = useRef(false);
+  const prevBatteryRef = useRef(100);
+  const hasDroppedBelow20Ref = useRef(false);
 
   // Gamepad polling
   useEffect(() => {
@@ -244,24 +245,40 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
   const currentCluster = clusters.findIndex((c) => c < 100);
   const allDepleted = clusters.every((c) => c <= 0);
 
-  // Désactiver blackScreen quand la batterie atteint 5% lors de la recharge
+  // Gestion de l'opacité du blackScreen basée sur le niveau de batterie
   useEffect(() => {
-    const currentCharge = clusters[0] || 0;
+    const currentCharge = clusters[0] ?? 100;
+    const prevCharge = prevBatteryRef.current;
+    const isDescending = currentCharge < prevCharge;
 
-    // Si on est en train de charger et qu'on atteint 5%
-    if (isCharging && currentCharge >= 5 && !hasReachedThresholdRef.current) {
-      hasReachedThresholdRef.current = true;
-      console.log("🔋 Batterie à 5% - Désactivation du blackScreen");
-      api.setBlackScreen(false).catch((err) => {
-        console.error("Erreur lors de la désactivation du blackScreen:", err);
+    // Détection du passage sous 20% en phase descendante
+    if (isDescending && prevCharge >= 20 && currentCharge < 20) {
+      hasDroppedBelow20Ref.current = true;
+      console.log("⚠️ Batterie sous 20% - Opacité passe à 50%");
+    }
+
+    // Reset quand on remonte au-dessus de 20%
+    if (currentCharge >= 20) {
+      hasDroppedBelow20Ref.current = false;
+    }
+
+    // Calcul de l'opacité
+    let opacity = 0;
+    if (currentCharge < 20 && hasDroppedBelow20Ref.current) {
+      // De 20% à 0%: opacité de 50% à 100%
+      // opacity = 50 + (20 - charge) / 20 * 50
+      opacity = 50 + ((20 - currentCharge) / 20) * 50;
+    }
+
+    opacity = Math.round(Math.max(0, Math.min(100, opacity)));
+
+    // Envoyer au serveur
+    api.setBlackScreenOpacity(opacity).catch((err) => {
+      console.error("Erreur lors de la mise à jour de l'opacité:", err);
       });
-    }
 
-    // Reset le flag si la batterie redescend sous 5% ou atteint 0%
-    if (currentCharge < 5 || currentCharge === 0) {
-      hasReachedThresholdRef.current = false;
-    }
-  }, [clusters, isCharging]);
+    prevBatteryRef.current = currentCharge;
+  }, [clusters]);
 
   return {
     clusters,
