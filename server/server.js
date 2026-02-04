@@ -54,7 +54,7 @@ app.use(express.json())
 app.use('/videos', express.static(path.join(__dirname, '../public/videos')))
 app.use('/audio', express.static(path.join(__dirname, '../public/audio')))
 app.use('/images', express.static(path.join(__dirname, '../public/images')))
-app.use('/external-videos', express.static('/Volumes/Extreme SSD'))
+app.use('/external-videos', express.static('/Volumes/ESD-ESP_1'))
 
 // API Routes
 app.get('/api/status', (req, res) => {

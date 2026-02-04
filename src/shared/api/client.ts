@@ -1,6 +1,6 @@
 import { ServerStatus } from '../types'
 
-let ip = '10.137.128.252' // Replace with your desired IP address
+let ip = '10.14.73.80' // Replace with your desired IP address
 
 const API_BASE = import.meta.env.DEV ? 'http://'+ip+':3001' : ''
 

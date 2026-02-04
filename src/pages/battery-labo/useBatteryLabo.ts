@@ -15,7 +15,7 @@ export interface BatteryLaboState {
 }
 
 export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
-  const [clusters, setClusters] = useState([100]);
+  const [clusters, setClusters] = useState([0]);
   const [isCharging, setIsCharging] = useState(false);
   const [pressure, setPressure] = useState(0);
   const [colorPhase, setColorPhase] = useState<ColorPhase>("safe");
