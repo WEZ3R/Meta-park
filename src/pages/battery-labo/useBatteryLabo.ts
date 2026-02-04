@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef } from "react";
 
 export type ColorPhase = "safe" | "caution" | "danger" | "critical";
 
@@ -15,7 +15,7 @@ export interface BatteryLaboState {
 }
 
 export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
-  const [clusters, setClusters] = useState([100, 100, 100]);
+  const [clusters, setClusters] = useState([100]);
   const [isCharging, setIsCharging] = useState(false);
   const [pressure, setPressure] = useState(0);
   const [colorPhase, setColorPhase] = useState<ColorPhase>("safe");
@@ -85,7 +85,7 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
       // Timer d'échec
       state.warningTimer = window.setTimeout(() => {
         console.log("💥 Trop tard ! Décharge totale !");
-        setClusters([0, 0, 0]);
+        setClusters([0]);
         state.hasExceeded = true; // Marquer le dépassement
         state.pressureAtRelease = 100;
         state.cooldownStartTime = Date.now();
@@ -158,8 +158,8 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
         else if (newPressure >= 40) phase = "caution";
         setColorPhase(phase);
 
-        // Afficher popup d'urgence quand pression >= 70%
-        setShowUrgentPopup(newPressure >= 70 && state.isCharging);
+        // Afficher popup d'urgence quand pression >= 70% (pas en pénalité)
+        setShowUrgentPopup(newPressure >= 70 && state.isCharging && !state.hasExceeded);
       }
     }, 50);
 
@@ -169,7 +169,7 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
   // Cluster charge/discharge logic
   useEffect(() => {
     const CHARGE_SPEED = 100 / 8;
-    const DISCHARGE_SPEED_NORMAL = 100 / 45;
+    const DISCHARGE_SPEED_NORMAL = 100 / 180; // 3 minutes
     const DISCHARGE_SPEED_SHUTDOWN = 100 / 1; // 1 seconde par batterie en shutdown
     const state = stateRef.current;
 

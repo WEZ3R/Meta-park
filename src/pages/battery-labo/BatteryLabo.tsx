@@ -38,7 +38,8 @@ export function BatteryLabo() {
 
   // Déterminer le message de pression
   const getPressureMessage = () => {
-    if (!isCharging && pressure === 0) return { text: "EN ATTENTE", class: "idle" };
+    if (!isCharging && pressure === 0)
+      return { text: "EN ATTENTE", class: "idle" };
     if (pressure < 40) return { text: "PRESSION STABLE", class: "safe" };
     if (pressure < 65) return { text: "PRESSION MODÉRÉE", class: "caution" };
     if (pressure < 85) return { text: "PRESSION ÉLEVÉE", class: "danger" };
@@ -71,7 +72,7 @@ export function BatteryLabo() {
 
       {/* Message d'état de pression */}
       <div className={`pressure-status ${pressureInfo.class}`}>
-        <div className="pressure-label">ÉTAT DU SYSTÈME</div>
+        <div className="pressure-label">ÉTAT DE LA DYNAMO</div>
         <div className="pressure-value">{pressureInfo.text}</div>
         <div className="pressure-percent">{Math.round(pressure)}%</div>
       </div>
@@ -82,7 +83,9 @@ export function BatteryLabo() {
           <div className="urgent-popup-content">
             <div className="urgent-icon">⚠️</div>
             <div className="urgent-title">ALERTE SURCHAUFFE</div>
-            <div className="urgent-message">RELÂCHEZ LE LEVIER IMMÉDIATEMENT</div>
+            <div className="urgent-message">
+              RELÂCHEZ LE LEVIER IMMÉDIATEMENT
+            </div>
           </div>
         </div>
       )}
