@@ -48,12 +48,12 @@ const FORKS: Fork[] = [
     left: {
       label: 'ENCLOS CARNIVORES',
       description: 'Zone haute securite — Personnel arme',
-      casualties: 0, isWorst: false,
+      casualties: 9, isWorst: false,
     },
     right: {
       label: 'ENCLOS HERBIVORES',
       description: 'Zone ouverte — Faible presence humaine',
-      casualties: 9, isWorst: true,
+      casualties: 0, isWorst: true,
     },
 
   },
@@ -65,12 +65,12 @@ const FORKS: Fork[] = [
     left: {
       label: 'ZONE SAFARI',
       description: 'Vehicules civils en circulation',
-      casualties: 1767, isWorst: true,
+      casualties: 0, isWorst: true,
     },
     right: {
       label: 'ENCLOS SOIGNEURS',
       description: 'Equipe veterinaire en intervention',
-      casualties: 0, isWorst: false,
+      casualties: 1767, isWorst: false,
     },
 
   },
@@ -345,14 +345,18 @@ export function DinoChaseGame() {
       return
     }
 
-    // Correct choice → advance
-    setChoices(prev => {
-      const n = [...prev]
-      n[ci] = side
-      return n
-    })
-    setTotalCasualties(prev => prev + opt.casualties)
-    setTimeout(() => setStepIdx(stepIdxRef.current + 1), 350)
+    // Correct choice → loading → advance
+    setErrorLoading(true)
+    setTimeout(() => {
+      setErrorLoading(false)
+      setChoices(prev => {
+        const n = [...prev]
+        n[ci] = side
+        return n
+      })
+      setTotalCasualties(prev => prev + opt.casualties)
+      setTimeout(() => setStepIdx(stepIdxRef.current + 1), 350)
+    }, 2000)
   }, [restart])
 
   // ── DERIVED ────────────────────────────────────────────
