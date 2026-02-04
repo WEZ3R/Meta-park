@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import { api } from "../../shared/api/client";
 
 export type ColorPhase = "safe" | "caution" | "danger" | "critical";
 
@@ -20,7 +21,9 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
   const [pressure, setPressure] = useState(0);
   const [colorPhase, setColorPhase] = useState<ColorPhase>("safe");
   const [isWarning, setIsWarning] = useState(false);
-  const [cooldownStartTime, setCooldownStartTime] = useState<number | null>(null);
+  const [cooldownStartTime, setCooldownStartTime] = useState<number | null>(
+    null,
+  );
   const [showUrgentPopup, setShowUrgentPopup] = useState(false);
 
   // Refs pour la logique interne
@@ -36,6 +39,8 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
     hasExceeded: false, // true si on a dépassé le seuil (trop tard)
   });
 
+  const hasReachedThresholdRef = useRef(false);
+
   // Gamepad polling
   useEffect(() => {
     let animationId: number;
@@ -47,7 +52,9 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
 
       for (const gp of gps) {
         if (gp) {
-          const hasActiveAxis = gp.axes.some((value) => Math.abs(value) > DEADZONE);
+          const hasActiveAxis = gp.axes.some(
+            (value) => Math.abs(value) > DEADZONE,
+          );
           const hasActiveButton = gp.buttons.some((button) => button.pressed);
 
           if (hasActiveAxis || hasActiveButton) {
@@ -73,14 +80,20 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
 
     // Transition: pas en charge -> en charge (début)
     // Bloqué si on a dépassé le seuil et que la pression n'est pas à 0
-    if (isCharging && !prevIsCharging && !(state.hasExceeded && state.pressure > 0)) {
+    if (
+      isCharging &&
+      !prevIsCharging &&
+      !(state.hasExceeded && state.pressure > 0)
+    ) {
       state.pressureAtStart = state.pressure;
       state.chargingStartTime = Date.now();
       state.hasExceeded = false; // Reset le flag de dépassement
       const randomDelay = 3000 + Math.random() * 5000;
       state.stopChargingAt = state.chargingStartTime + randomDelay;
 
-      console.log(`🎯 Pression départ: ${state.pressureAtStart.toFixed(1)}% - ${(randomDelay / 1000).toFixed(1)}s pour relâcher`);
+      console.log(
+        `🎯 Pression départ: ${state.pressureAtStart.toFixed(1)}% - ${(randomDelay / 1000).toFixed(1)}s pour relâcher`,
+      );
 
       // Timer d'échec
       state.warningTimer = window.setTimeout(() => {
@@ -98,7 +111,9 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
 
       setIsWarning(true);
     } else if (isCharging && !prevIsCharging && state.hasExceeded) {
-      console.log("⛔ Levier bloqué ! Attendez que la pression redescende à 0.");
+      console.log(
+        "⛔ Levier bloqué ! Attendez que la pression redescende à 0.",
+      );
     }
 
     // Transition: en charge -> pas en charge (relâchement)
@@ -122,12 +137,19 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
     const interval = setInterval(() => {
       let newPressure = state.pressure;
 
-      if (state.isCharging && state.chargingStartTime && state.stopChargingAt && !state.hasExceeded) {
+      if (
+        state.isCharging &&
+        state.chargingStartTime &&
+        state.stopChargingAt &&
+        !state.hasExceeded
+      ) {
         // En charge: augmenter la pression (seulement si pas en pénalité)
         const totalTime = state.stopChargingAt - state.chargingStartTime;
         const elapsed = Date.now() - state.chargingStartTime;
         const progress = Math.min(100, (elapsed / totalTime) * 100);
-        newPressure = state.pressureAtStart + (100 - state.pressureAtStart) * (progress / 100);
+        newPressure =
+          state.pressureAtStart +
+          (100 - state.pressureAtStart) * (progress / 100);
       } else if (state.cooldownStartTime) {
         // Cooldown: diminuer la pression
         // Normal: 5s, après dépassement: 10s (2x plus lent)
@@ -159,7 +181,9 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
         setColorPhase(phase);
 
         // Afficher popup d'urgence quand pression >= 70% (pas en pénalité)
-        setShowUrgentPopup(newPressure >= 70 && state.isCharging && !state.hasExceeded);
+        setShowUrgentPopup(
+          newPressure >= 70 && state.isCharging && !state.hasExceeded,
+        );
       }
     }, 50);
 
@@ -169,7 +193,7 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
   // Cluster charge/discharge logic
   useEffect(() => {
     const CHARGE_SPEED = 100 / 8;
-    const DISCHARGE_SPEED_NORMAL = 100 / 180; // 3 minutes
+    const DISCHARGE_SPEED_NORMAL = 100 / 15; // 15 secondes
     const DISCHARGE_SPEED_SHUTDOWN = 100 / 1; // 1 seconde par batterie en shutdown
     const state = stateRef.current;
 
@@ -181,7 +205,10 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
         if (isShutdown) {
           for (let i = newClusters.length - 1; i >= 0; i--) {
             if (newClusters[i] > 0) {
-              newClusters[i] = Math.max(0, newClusters[i] - DISCHARGE_SPEED_SHUTDOWN / 60);
+              newClusters[i] = Math.max(
+                0,
+                newClusters[i] - DISCHARGE_SPEED_SHUTDOWN / 60,
+              );
               break;
             }
           }
@@ -192,13 +219,16 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
           if (currentClusterIndex !== -1) {
             newClusters[currentClusterIndex] = Math.min(
               100,
-              newClusters[currentClusterIndex] + CHARGE_SPEED / 60
+              newClusters[currentClusterIndex] + CHARGE_SPEED / 60,
             );
           }
         } else {
           for (let i = newClusters.length - 1; i >= 0; i--) {
             if (newClusters[i] > 0) {
-              newClusters[i] = Math.max(0, newClusters[i] - DISCHARGE_SPEED_NORMAL / 60);
+              newClusters[i] = Math.max(
+                0,
+                newClusters[i] - DISCHARGE_SPEED_NORMAL / 60,
+              );
               break;
             }
           }
@@ -213,6 +243,25 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
 
   const currentCluster = clusters.findIndex((c) => c < 100);
   const allDepleted = clusters.every((c) => c <= 0);
+
+  // Désactiver blackScreen quand la batterie atteint 5% lors de la recharge
+  useEffect(() => {
+    const currentCharge = clusters[0] || 0;
+
+    // Si on est en train de charger et qu'on atteint 5%
+    if (isCharging && currentCharge >= 5 && !hasReachedThresholdRef.current) {
+      hasReachedThresholdRef.current = true;
+      console.log("🔋 Batterie à 5% - Désactivation du blackScreen");
+      api.setBlackScreen(false).catch((err) => {
+        console.error("Erreur lors de la désactivation du blackScreen:", err);
+      });
+    }
+
+    // Reset le flag si la batterie redescend sous 5% ou atteint 0%
+    if (currentCharge < 5 || currentCharge === 0) {
+      hasReachedThresholdRef.current = false;
+    }
+  }, [clusters, isCharging]);
 
   return {
     clusters,

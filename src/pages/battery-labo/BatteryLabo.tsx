@@ -6,7 +6,7 @@ import { useApp } from "../../shared/context/AppContext";
 
 export function BatteryLabo() {
   const { setBlackScreen, status } = useApp();
-  const blackScreenTriggered = useRef(false);
+  const prevAllDepletedRef = useRef(false);
   const isShutdown = status?.isShutdown ?? false;
 
   const {
@@ -28,12 +28,13 @@ export function BatteryLabo() {
 
   // Déclencher blackScreen quand toutes les batteries sont vides
   useEffect(() => {
-    if (allDepleted && !blackScreenTriggered.current) {
-      blackScreenTriggered.current = true;
+    // Déclencher seulement sur la transition false -> true
+    if (allDepleted && !prevAllDepletedRef.current) {
       console.log("🔴 Toutes les batteries sont vides ! BlackScreen activé.");
       console.log("📺 BlackScreen passe en TRUE");
       setBlackScreen(true);
     }
+    prevAllDepletedRef.current = allDepleted;
   }, [allDepleted, setBlackScreen]);
 
   // Déterminer le message de pression
