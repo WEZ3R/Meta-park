@@ -79,7 +79,7 @@ const QUESTIONS: Question[] = [
       'Lion', 'Vierge', 'Balance', 'Scorpion',
       'Sagittaire', 'Capricorne', 'Verseau', 'Poissons',
     ],
-    answer: 'Lion',
+    answer: 'Poissons',
   },
   {
     id: 5,
@@ -109,7 +109,7 @@ const QUESTIONS: Question[] = [
     id: 7,
     type: 'number',
     text: "Combien d'œufs ont éclos ?",
-    answer: 5,
+    answer: 7,
   },
   {
     id: 8,
@@ -158,7 +158,7 @@ const QUESTIONS: Question[] = [
     id: 12,
     type: 'number',
     text: "Combien de minutes se sont écoulées entre la détection de l'anomalie et la perte totale du signal réseau ?",
-    answer: 41,
+    answer: 31,
   },
   {
     id: 13,
@@ -170,7 +170,7 @@ const QUESTIONS: Question[] = [
     id: 14,
     type: 'time',
     text: 'À quelle heure la coupure réseau a-t-elle eu lieu ?',
-    answer: '18:22',
+    answer: '18:16',
   },
   {
     id: 15,
@@ -214,7 +214,7 @@ const QUESTIONS: Question[] = [
     id: 19,
     type: 'time',
     text: 'À quelle heure le sujet a-t-il été neutralisé ?',
-    answer: '19:27',
+    answer: '18:29',
   },
   {
     id: 20,
