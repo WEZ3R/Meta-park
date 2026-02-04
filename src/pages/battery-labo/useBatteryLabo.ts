@@ -16,7 +16,7 @@ export interface BatteryLaboState {
 }
 
 export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
-  const [clusters, setClusters] = useState([100]);
+  const [clusters, setClusters] = useState([0]);
   const [isCharging, setIsCharging] = useState(false);
   const [pressure, setPressure] = useState(0);
   const [colorPhase, setColorPhase] = useState<ColorPhase>("safe");
@@ -199,7 +199,7 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
   // Cluster charge/discharge logic
   useEffect(() => {
     const CHARGE_SPEED = 100 / 8;
-    const DISCHARGE_SPEED_NORMAL = 100 / 15; // 15 secondes
+    const DISCHARGE_SPEED_NORMAL = 100 / 180; // 3 minutes
     const DISCHARGE_SPEED_SHUTDOWN = 100 / 1; // 1 seconde par batterie en shutdown
     const state = stateRef.current;
 
@@ -280,7 +280,7 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
     // Envoyer au serveur
     api.setBlackScreenOpacity(opacity).catch((err) => {
       console.error("Erreur lors de la mise à jour de l'opacité:", err);
-      });
+    });
 
     prevBatteryRef.current = currentCharge;
   }, [clusters]);
