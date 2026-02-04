@@ -1,0 +1,1 @@
+export { BlackScreen } from "./BlackScreen";

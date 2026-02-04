@@ -9,10 +9,6 @@ export function VitalsPage() {
   const isShutdown = status?.isShutdown ?? false
   const vitals = status?.vitals ?? [true, true, true]
 
-  if (status?.isBlackScreen) {
-    return <div style={{ width: '100vw', height: '100vh', background: '#000' }} />
-  }
-
   if (phase === 1 || isShutdown) {
     return (
       <div className="vitals-page vitals-page-error">
