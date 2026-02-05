@@ -1,5 +1,6 @@
 import { useApp } from '../../shared/context/AppContext'
 import { api } from '../../shared/api/client'
+import { ErrorConsole } from './ErrorConsole'
 import './AdminPage.css'
 
 const PHASE_LABELS: Record<number, string> = {
@@ -89,6 +90,8 @@ export function AdminPage() {
             RÉINITIALISER TOUT
           </button>
         </div>
+
+        <ErrorConsole />
       </div>
     </div>
   )

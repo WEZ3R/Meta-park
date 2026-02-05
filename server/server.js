@@ -71,6 +71,10 @@ function saveScores() {
 let questionnaireStats = loadStats()
 let questionnaireScores = loadScores()
 
+// Client errors storage (in-memory, limited to 100)
+let clientErrors = []
+const MAX_ERRORS = 100
+
 // Middleware
 app.use(cors())
 app.use(express.json())
@@ -211,6 +215,36 @@ app.post('/api/login', (req, res) => {
   } else {
     res.status(401).json({ success: false, error: 'Invalid password' })
   }
+})
+
+// Client errors endpoints
+app.post('/api/errors', (req, res) => {
+  const { message, stack, source, type } = req.body
+  if (!message || !source || !type) {
+    return res.status(400).json({ error: 'message, source and type are required' })
+  }
+  const error = {
+    id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+    message,
+    stack: stack || null,
+    source,
+    timestamp: Date.now(),
+    type
+  }
+  clientErrors.unshift(error)
+  if (clientErrors.length > MAX_ERRORS) {
+    clientErrors = clientErrors.slice(0, MAX_ERRORS)
+  }
+  res.json({ success: true, error })
+})
+
+app.get('/api/errors', (req, res) => {
+  res.json({ errors: clientErrors })
+})
+
+app.delete('/api/errors', (req, res) => {
+  clientErrors = []
+  res.json({ success: true })
 })
 
 // Serve React app in production

@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AppProvider } from './shared/context/AppContext'
 import { AuthProvider } from './shared/context/AuthContext'
+import { ErrorLoggerProvider } from './shared/context/ErrorLoggerContext'
 import { BlackScreen } from './shared/components'
 import { AdminPage } from './pages/admin'
 import { TestNeutralisantPage } from './pages/testNeutralisant'
@@ -44,12 +45,14 @@ function AppRoutes() {
 function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <AppProvider>
-          <AppRoutes />
-          <BlackScreen />
-        </AppProvider>
-      </AuthProvider>
+      <ErrorLoggerProvider>
+        <AuthProvider>
+          <AppProvider>
+            <AppRoutes />
+            <BlackScreen />
+          </AppProvider>
+        </AuthProvider>
+      </ErrorLoggerProvider>
     </BrowserRouter>
   );
 }
