@@ -55,32 +55,32 @@ const QUESTIONS: Question[] = [
   {
     id: 1,
     type: 'time',
-    text: "À quelle heure le centre de controle a-t-il été initialisé le jour de l'incident ?",
+    text: "À quelle heure le centre de controle a-t-il été initialisé le jour de l'incident ? (zone log)",
     answer: '17:30',
   },
   {
     id: 2,
     type: 'text-multi',
-    text: "De qui était constituée l'équipe terrain ?",
+    text: "De qui était constituée l'équipe terrain ? (zone log)",
     count: 3,
     answers: ['julia', 'fabio', 'rico'],
   },
   {
     id: 3,
     type: 'date',
-    text: 'Quel jour a eu lieu l\'incident?',
+    text: 'Quel jour a eu lieu l\'incident? (zone control)',
     answer: '03/06',
   },
   {
     id: 4,
     type: 'number',
-    text: "Combien d'œufs ont éclos dans le labo ?",
+    text: "Combien d'œufs ont éclos dans le labo ? (zone labo)",
     answer: 7,
   },
   {
     id: 5,
     type: 'select',
-    text: 'Quel dinosaure s\'est échappé ?',
+    text: 'Quel dinosaure s\'est échappé ? (zone control)',
     options: [
       'T-Rex', 'Vélociraptor', 'Brachiosaure', 'Ptéranodon',
       'Stégosaure', 'Spinosaure', 'Dilophosaure', 'Ankylosaure',
@@ -90,14 +90,14 @@ const QUESTIONS: Question[] = [
   {
     id: 6,
     type: 'time',
-    text: 'À quelle heure la coupure réseau a-t-elle eu lieu ?',
+    text: 'À quelle heure la coupure réseau a-t-elle eu lieu ? (zone log)',
     answer: '18:16',
   },
   // ── MOYEN (7-11) ──
   {
     id: 7,
     type: 'select-multi',
-    text: 'Quelles caméras ont détecté une anomalie avant la coupure réseau ?',
+    text: 'Quelles caméras ont détecté une anomalie avant la coupure réseau ? (zone control)',
     count: 2,
     options: [
       'Caméra 1', 'Caméra 2', 'Caméra 3', 'Caméra 4', 'Caméra 5',
@@ -108,7 +108,7 @@ const QUESTIONS: Question[] = [
   {
     id: 8,
     type: 'select',
-    text: 'Quel est le signe astrologique de Rico ?',
+    text: 'Quel est le signe astrologique de Rico ? (décor)',
     options: [
       'Bélier', 'Taureau', 'Gémeaux', 'Cancer',
       'Lion', 'Vierge', 'Balance', 'Scorpion',
@@ -119,7 +119,7 @@ const QUESTIONS: Question[] = [
   {
     id: 9,
     type: 'select',
-    text: 'Est ce que fabio à tiré sur le sujet ?',
+    text: 'Est ce que fabio à tiré sur le sujet ? (zone control)',
     options: [
       'Fabio à manqué la cible',
       'Fabio à tiré mais il a raté',
@@ -131,13 +131,13 @@ const QUESTIONS: Question[] = [
   {
     id: 10,
     type: 'time',
-    text: 'À quelle heure est morte Julia ?',
+    text: 'À quelle heure est morte Julia ? (zone log)',
     answer: '18:21',
   },
   {
     id: 11,
     type: 'time',
-    text: 'À quelle heure le sujet a-t-il été neutralisé ?',
+    text: 'À quelle heure le dino a-t-il été neutralisé ? (zone log)',
     answer: '18:29',
   },
   // ── DIFFICILE (12-14) ──
