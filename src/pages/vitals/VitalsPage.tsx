@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import { useApp } from '../../shared/context/AppContext'
 import './VitalsPage.css'
 
-const VIDEO_SRC = '/external-videos/Vitals - FINAL.mp4'
+const VIDEO_SRC = '/external-videos/Vital réduit.mp4'
 
 // Fictional time range: 17:30 → 19:27 (117 minutes)
 const START_MINUTES = 17 * 60 + 30 // 1050

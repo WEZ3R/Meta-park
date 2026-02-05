@@ -7,12 +7,10 @@ export interface BatteryLaboState {
   clusters: number[];
   isCharging: boolean;
   currentCluster: number;
-  isWarning: boolean;
   colorPhase: ColorPhase;
   cooldownStartTime: number | null;
   pressure: number;
   allDepleted: boolean;
-  showUrgentPopup: boolean;
 }
 
 export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
@@ -20,11 +18,9 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
   const [isCharging, setIsCharging] = useState(false);
   const [pressure, setPressure] = useState(0);
   const [colorPhase, setColorPhase] = useState<ColorPhase>("safe");
-  const [isWarning, setIsWarning] = useState(false);
   const [cooldownStartTime, setCooldownStartTime] = useState<number | null>(
     null,
   );
-  const [showUrgentPopup, setShowUrgentPopup] = useState(false);
 
   // Refs pour la logique interne
   const stateRef = useRef({
@@ -35,8 +31,6 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
     pressureAtStart: 0,
     pressureAtRelease: 0,
     cooldownStartTime: null as number | null,
-    warningTimer: null as number | null,
-    hasExceeded: false, // true si on a dépassé le seuil (trop tard)
   });
 
   const prevBatteryRef = useRef(100);
@@ -80,62 +74,23 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
     state.isCharging = isCharging;
 
     // Transition: pas en charge -> en charge (début)
-    // Bloqué si on a dépassé le seuil et que la pression n'est pas à 0
-    if (
-      isCharging &&
-      !prevIsCharging &&
-      !(state.hasExceeded && state.pressure > 0)
-    ) {
+    if (isCharging && !prevIsCharging) {
       state.pressureAtStart = state.pressure;
       state.chargingStartTime = Date.now();
-      state.hasExceeded = false; // Reset le flag de dépassement
 
-      // Délai fixe de 8 secondes pour la surchauffe (de 0 à 100%)
+      // Délai fixe de 8 secondes (de 0 à 100%)
       const baseDelay = 8000;
-      // Ajuster le délai en fonction de la pression restante à atteindre
       const remainingPercent = (100 - state.pressureAtStart) / 100;
       const scaledDelay = baseDelay * remainingPercent;
       state.stopChargingAt = state.chargingStartTime + scaledDelay;
-
-      console.log(
-        `🎯 Pression départ: ${state.pressureAtStart.toFixed(1)}% - ${(scaledDelay / 1000).toFixed(1)}s pour relâcher`,
-      );
-
-      // Timer d'échec
-      state.warningTimer = window.setTimeout(() => {
-        console.log("💥 Trop tard ! Décharge totale !");
-        setClusters([0]);
-        state.hasExceeded = true; // Marquer le dépassement
-        state.pressureAtRelease = 100;
-        state.cooldownStartTime = Date.now();
-        state.chargingStartTime = null;
-        state.stopChargingAt = null;
-        state.warningTimer = null;
-        setIsWarning(false);
-        setCooldownStartTime(state.cooldownStartTime);
-      }, scaledDelay);
-
-      setIsWarning(true);
-    } else if (isCharging && !prevIsCharging && state.hasExceeded) {
-      console.log(
-        "⛔ Levier bloqué ! Attendez que la pression redescende à 0.",
-      );
     }
 
     // Transition: en charge -> pas en charge (relâchement)
     if (!isCharging && prevIsCharging) {
-      if (state.warningTimer) {
-        clearTimeout(state.warningTimer);
-        state.warningTimer = null;
-        setIsWarning(false);
-      }
-
       state.pressureAtRelease = state.pressure;
       state.cooldownStartTime = Date.now();
       state.chargingStartTime = null;
       state.stopChargingAt = null;
-
-      console.log(`✅ Relâché à ${state.pressureAtRelease.toFixed(1)}%`);
       setCooldownStartTime(state.cooldownStartTime);
     }
 
@@ -146,10 +101,9 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
       if (
         state.isCharging &&
         state.chargingStartTime &&
-        state.stopChargingAt &&
-        !state.hasExceeded
+        state.stopChargingAt
       ) {
-        // En charge: augmenter la pression (seulement si pas en pénalité)
+        // En charge: augmenter la pression
         const totalTime = state.stopChargingAt - state.chargingStartTime;
         const elapsed = Date.now() - state.chargingStartTime;
         const progress = Math.min(100, (elapsed / totalTime) * 100);
@@ -157,19 +111,16 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
           state.pressureAtStart +
           (100 - state.pressureAtStart) * (progress / 100);
       } else if (state.cooldownStartTime) {
-        // Cooldown: diminuer la pression
-        // Normal: 5s, après dépassement: 10s (2x plus lent)
-        const cooldownDuration = state.hasExceeded ? 10000 : 5000;
+        // Cooldown: diminuer la pression (5s)
+        const cooldownDuration = 5000;
         const elapsed = Date.now() - state.cooldownStartTime;
         const progress = Math.min(100, (elapsed / cooldownDuration) * 100);
         newPressure = state.pressureAtRelease * (1 - progress / 100);
 
         if (progress >= 100) {
           state.cooldownStartTime = null;
-          state.hasExceeded = false; // Reset quand la pression atteint 0
           setCooldownStartTime(null);
           newPressure = 0;
-          console.log("✅ Pression à 0 - Levier débloqué");
         }
       }
 
@@ -185,11 +136,6 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
         else if (newPressure >= 65) phase = "danger";
         else if (newPressure >= 40) phase = "caution";
         setColorPhase(phase);
-
-        // Afficher popup d'urgence quand pression >= 70% (pas en pénalité)
-        setShowUrgentPopup(
-          newPressure >= 70 && state.isCharging && !state.hasExceeded,
-        );
       }
     }, 50);
 
@@ -198,10 +144,9 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
 
   // Cluster charge/discharge logic
   useEffect(() => {
-    const CHARGE_SPEED = 100 / 16; // 50% plus lent (16s pour charger complètement)
+    const CHARGE_SPEED = 100 / 16; // 16s pour charger complètement
     const DISCHARGE_SPEED_NORMAL = 100 / 180; // 3 minutes
     const DISCHARGE_SPEED_SHUTDOWN = 100 / 1; // 1 seconde par batterie en shutdown
-    const state = stateRef.current;
 
     const interval = setInterval(() => {
       setClusters((prev) => {
@@ -219,8 +164,8 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
             }
           }
         }
-        // Charge seulement si levier actif ET pas en pénalité ET pas en shutdown
-        else if (isCharging && !state.hasExceeded) {
+        // Charge si levier actif
+        else if (isCharging) {
           const currentClusterIndex = newClusters.findIndex((c) => c < 100);
           if (currentClusterIndex !== -1) {
             newClusters[currentClusterIndex] = Math.min(
@@ -259,7 +204,6 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
     // Détection du passage sous 20% en phase descendante
     if (isDescending && prevCharge >= 20 && currentCharge < 20) {
       hasDroppedBelow20Ref.current = true;
-      console.log("⚠️ Batterie sous 20% - Opacité passe à 50%");
     }
 
     // Reset quand on remonte au-dessus de 20%
@@ -270,8 +214,6 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
     // Calcul de l'opacité
     let opacity = 0;
     if (currentCharge < 20 && hasDroppedBelow20Ref.current) {
-      // De 20% à 0%: opacité de 50% à 100%
-      // opacity = 50 + (20 - charge) / 20 * 50
       opacity = 50 + ((20 - currentCharge) / 20) * 50;
     }
 
@@ -289,11 +231,9 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
     clusters,
     isCharging,
     currentCluster,
-    isWarning,
     colorPhase,
     cooldownStartTime,
     pressure,
     allDepleted,
-    showUrgentPopup,
   };
 }

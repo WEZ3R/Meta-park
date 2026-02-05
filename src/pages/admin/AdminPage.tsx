@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react'
 import { useApp } from '../../shared/context/AppContext'
+import { api } from '../../shared/api/client'
 import './AdminPage.css'
 
 const PHASE_LABELS: Record<number, string> = {
@@ -131,6 +132,15 @@ export function AdminPage() {
               </button>
             ))}
           </div>
+        </div>
+
+        <div className="admin-section">
+          <button
+            className="btn btn-reset-all"
+            onClick={() => { if (confirm('Réinitialiser toutes les pages ?')) api.resetAll() }}
+          >
+            RÉINITIALISER TOUT
+          </button>
         </div>
       </div>
     </div>

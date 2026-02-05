@@ -51,6 +51,7 @@ interface SelectMultiQuestion {
 type Question = (TimeQuestion | TextMultiQuestion | DateQuestion | SelectQuestion | NumberQuestion | SelectMultiQuestion) & { id: number }
 
 const QUESTIONS: Question[] = [
+  // ── FACILE (1-6) ──
   {
     id: 1,
     type: 'time',
@@ -72,30 +73,29 @@ const QUESTIONS: Question[] = [
   },
   {
     id: 4,
-    type: 'select',
-    text: 'Quel est le signe astrologique de Rico ?',
-    options: [
-      'Bélier', 'Taureau', 'Gémeaux', 'Cancer',
-      'Lion', 'Vierge', 'Balance', 'Scorpion',
-      'Sagittaire', 'Capricorne', 'Verseau', 'Poissons',
-    ],
-    answer: 'Poissons',
+    type: 'number',
+    text: "Combien d'œufs ont éclos dans le labo ?",
+    answer: 7,
   },
   {
     id: 5,
     type: 'select',
-    text: "Quel est l'événement spécial du jour de l'incident ?",
+    text: 'Quel dinosaure s\'est échappé ?',
     options: [
-      'Présentation du T-REX au grand public',
-      "Réouverture de l'aile nord après des travaux de 6 mois",
-      "Réouverture après une semaine à cause d'un ouragan",
-      'Inauguration du parc',
-      "Réouverture du parc après une semaine de fermeture due à l'ouragan",
+      'T-Rex', 'Vélociraptor', 'Brachiosaure', 'Ptéranodon',
+      'Stégosaure', 'Spinosaure', 'Dilophosaure', 'Ankylosaure',
     ],
-    answer: "Réouverture du parc après une semaine de fermeture due à l'ouragan",
+    answer: 'T-Rex',
   },
   {
     id: 6,
+    type: 'time',
+    text: 'À quelle heure la coupure réseau a-t-elle eu lieu ?',
+    answer: '18:16',
+  },
+  // ── MOYEN (7-11) ──
+  {
+    id: 7,
     type: 'select-multi',
     text: 'Quelles caméras ont détecté une anomalie avant la coupure réseau ?',
     count: 2,
@@ -106,136 +106,18 @@ const QUESTIONS: Question[] = [
     answers: ['Caméra 4', 'Caméra 8'],
   },
   {
-    id: 7,
-    type: 'number',
-    text: "Combien d'œufs ont éclos ?",
-    answer: 7,
-  },
-  {
     id: 8,
     type: 'select',
-    text: 'Quel dinosaure s\'est échappé ?',
+    text: 'Quel est le signe astrologique de Rico ?',
     options: [
-      'T-Rex', 'Vélociraptor', 'Brachiosaure', 'Ptéranodon',
-      'Stégosaure', 'Spinosaure', 'Dilophosaure', 'Ankylosaure',
+      'Bélier', 'Taureau', 'Gémeaux', 'Cancer',
+      'Lion', 'Vierge', 'Balance', 'Scorpion',
+      'Sagittaire', 'Capricorne', 'Verseau', 'Poissons',
     ],
-    answer: 'T-Rex',
+    answer: 'Lion',
   },
   {
     id: 9,
-    type: 'select',
-    text: "À quelle référence cinématographique fait référence le code d’accès du centre de contrôle ?",
-    options: [
-      "Date de naissance d'un agent de maintenance",
-      'Nombre de dinosaures dans le parc',
-      'La date de sortie du premier Jurassic Park',
-      'Date de clonage du premier dinosaure du parc',
-    ],
-    answer: 'La date de sortie du premier Jurassic Park',
-  },
-  {
-    id: 10,
-    type: 'select',
-    text: "Dans quel secteur le sujet est partis ?",
-    options: ['Zone nord', 'Zone sud', 'Zone est', 'Zone ouest'],
-    answer: 'Zone nord',
-  },
-  {
-    id: 11,
-    type: 'select',
-    text: "Comment l'enclos a été endommagé ?",
-    options: [
-      "Ouragan qui a fragilisé l'enclos",
-      "Tremblement de terre",
-      "Inondation",
-      "Foudre",
-      "Éruption volcanique",
-      "Glissement de terrain",
-    ],
-    answer: "Ouragan qui a fragilisé l'enclos",
-  },
-  {
-    id: 12,
-    type: 'number',
-    text: "Combien de minutes se sont écoulées entre la détection de l'anomalie et la perte totale du signal réseau ?",
-    answer: 31,
-  },
-  {
-    id: 13,
-    type: 'time',
-    text: 'À quelle heure est morte Julia ?',
-    answer: '18:21',
-  },
-  {
-    id: 14,
-    type: 'time',
-    text: 'À quelle heure la coupure réseau a-t-elle eu lieu ?',
-    answer: '18:16',
-  },
-  {
-    id: 15,
-    type: 'select',
-    text: 'Quelle est la cause de la coupure réseau ?',
-    options: [
-      'Percussion de la tour réseau par le T-Rex',
-      'Percussion de la tour réseau par un véhicule',
-      'Tempête',
-      'Tremblement de terre',
-    ],
-    answer: 'Percussion de la tour réseau par le T-Rex',
-  },
-  {
-    id: 16,
-    type: 'select',
-    text: 'Quel enclos a été ouvert pour ralentir le sujet lors de la poursuite ?',
-    options: [
-      'Raptors', 'T-Rex', 'Ptéranodons', 'Brachiosaures',
-      'Dilophosaures', 'Stégosaures',
-    ],
-    answer: 'Raptors',
-  },
-  {
-    id: 17,
-    type: 'select',
-    text: "Quel dinosaure a été classifié comme carnivore alors qu'il est herbivore ?",
-    options: [
-      'Triceratops', 'Brachiosaure', 'Stégosaure',
-      'Parasaurolophus', 'Ankylosaure', 'Pachycéphalosaure',
-    ],
-    answer: 'Triceratops',
-  },
-  {
-    id: 18,
-    type: 'number',
-    text: 'Nombre de victimes au total lors de l\'incident ?',
-    answer: 8136,
-  },
-  {
-    id: 19,
-    type: 'time',
-    text: 'À quelle heure le sujet a-t-il été neutralisé ?',
-    answer: '18:29',
-  },
-  {
-    id: 20,
-    type: 'select',
-    text: 'Quelle est la molécule qui a été choisie pour créer le gaz qui a neutralisé le dinosaure ?',
-    options: [
-      'Éthanol', 'Oméga-Soufre', 'Krypton', 'Séquenceur-Z',
-      'Xénotrium', 'Cryo-Génon', 'Lithium', 'Quartz-Liquide',
-      'Nitro-Phosphore', 'Gaz-Somnus', 'Acide-Borique', 'Sério-Végétal',
-    ],
-    answer: 'Gaz-Somnus',
-  },
-  {
-    id: 21,
-    type: 'select',
-    text: 'Dans quelle serre Fabio envoie-t-il le sujet ?',
-    options: ['S-01', 'S-03', 'N-05', 'D-02', 'W-04'],
-    answer: 'S-03',
-  },
-  {
-    id: 22,
     type: 'select',
     text: 'Est ce que fabio à tiré sur le sujet ?',
     options: [
@@ -247,16 +129,67 @@ const QUESTIONS: Question[] = [
     answer: 'Fabio à tiré et à touché le sujet',
   },
   {
-    id: 23,
+    id: 10,
+    type: 'time',
+    text: 'À quelle heure est morte Julia ?',
+    answer: '18:21',
+  },
+  {
+    id: 11,
+    type: 'time',
+    text: 'À quelle heure le sujet a-t-il été neutralisé ?',
+    answer: '18:29',
+  },
+  // ── DIFFICILE (12-14) ──
+  {
+    id: 12,
     type: 'select',
-    text: "Qu'est-ce qui arrive à Fabio après les évènements ?",
+    text: "À quel évènement ciné fait référence le code d'accès du centre de contrôle ?",
     options: [
-      'Il décède sur place',
-      'Il est à l\'hopital',
-      'Il est transféré dans un autre parc',
-      'Il démissionne après l\'incident',
+      "La date de sortie de Jurassic World",
+      'La date de sortie de Star Wars épisode IV',
+      'La date de sortie du premier Jurassic Park',
+      'La date de sortie du premier Indiana Jones',
     ],
-    answer: 'Il est à l\'hopital',
+    answer: 'La date de sortie du premier Jurassic Park',
+  },
+  {
+    id: 13,
+    type: 'select',
+    text: 'Quel enclos a été ouvert pour ralentir le dino lors de la poursuite ?',
+    options: [
+      'Raptors', 'T-Rex', 'Ptéranodons', 'Brachiosaures',
+      'Dilophosaures', 'Stégosaures',
+    ],
+    answer: 'Raptors',
+  },
+  {
+    id: 14,
+    type: 'select',
+    text: "Quel dinosaure a été classifié comme carnivore sur les affiches alors qu'il est herbivore ?",
+    options: [
+      'Triceratops', 'Brachiosaure', 'Stégosaure',
+      'Parasaurolophus', 'Ankylosaure', 'Pachycéphalosaure',
+    ],
+    answer: 'Triceratops',
+  },
+  // ── EXTRÊME (15-16) ──
+  {
+    id: 15,
+    type: 'select',
+    text: 'Quelle est la molécule qui a été utilisée pour créer le gaz qui a neutralisé le dinosaure ?',
+    options: [
+      'Éthanol', 'Oméga-Soufre', 'Krypton', 'Séquenceur-Z',
+      'Xénotrium', 'Cryo-Génon', 'Lithium', 'Quartz-Liquide',
+      'Nitro-Phosphore', 'Gaz-Somnus', 'Acide-Borique', 'Sério-Végétal',
+    ],
+    answer: 'Gaz-Somnus',
+  },
+  {
+    id: 16,
+    type: 'number',
+    text: 'Nombre de victimes au total lors de l\'incident ?',
+    answer: 8134,
   },
 ]
 
@@ -265,19 +198,19 @@ const QUESTIONS: Question[] = [
 // ═══════════════════════════════════════════════════════════
 
 const POINTS: Record<number, number> = {
-  1: 3, 2: 3, 3: 3, 6: 3, 7: 3, 8: 3, 10: 3, 11: 3, 14: 3, 18: 3, 22: 3,
-  5: 5, 13: 5, 16: 5, 19: 5,
-  4: 7, 9: 7, 15: 7, 21: 7,
-  12: 10, 17: 10, 20: 10, 23: 10,
+  1: 3, 2: 3, 3: 3, 4: 3, 5: 3, 6: 3,
+  7: 5, 8: 5, 9: 5, 10: 5, 11: 5,
+  12: 7, 13: 7, 14: 7,
+  15: 10, 16: 10,
 }
 
 const MAX_SCORE = QUESTIONS.reduce((sum, q) => sum + (POINTS[q.id] ?? 3), 0)
 
 const SECTIONS = [
-  { label: 'FACILE', slug: 'facile', ids: [1, 2, 3, 6, 7, 8, 10, 11, 14, 18, 22] },
-  { label: 'MOYEN', slug: 'moyen', ids: [5, 13, 16, 19] },
-  { label: 'DIFFICILE', slug: 'difficile', ids: [4, 9, 15, 21] },
-  { label: 'TRÈS DIFFICILE', slug: 'tres-difficile', ids: [12, 17, 20, 23] },
+  { label: 'FACILE', slug: 'facile', ids: [1, 2, 3, 4, 5, 6] },
+  { label: 'MOYEN', slug: 'moyen', ids: [7, 8, 9, 10, 11] },
+  { label: 'DIFFICILE', slug: 'difficile', ids: [12, 13, 14] },
+  { label: 'EXTRÊME', slug: 'extreme', ids: [15, 16] },
 ]
 
 const QUESTIONS_BY_ID = new Map(QUESTIONS.map(q => [q.id, q]))
@@ -332,6 +265,8 @@ export function QuestionnairePage() {
   const phase = status?.phase ?? 0
   const isShutdown = status?.isShutdown ?? false
 
+  const [teamName, setTeamName] = useState('')
+  const [teamNameConfirmed, setTeamNameConfirmed] = useState(false)
   const [answers, setAnswers] = useState<Record<number, string | string[]>>({})
   const [validated, setValidated] = useState(false)
   const [stats, setStats] = useState<Stats | null>(null)
@@ -364,8 +299,12 @@ export function QuestionnairePage() {
     for (const q of QUESTIONS) {
       results[q.id] = checkAnswer(q, answers[q.id] ?? getDefaultValue(q))
     }
+    const finalScore = QUESTIONS.reduce((sum, q) => {
+      const correct = checkAnswer(q, answers[q.id] ?? getDefaultValue(q))
+      return sum + (correct ? (POINTS[q.id] ?? 3) : 0)
+    }, 0)
     try {
-      const res = await api.submitQuestionnaire(results)
+      const res = await api.submitQuestionnaire(results, teamName, finalScore)
       setStats(res.stats)
     } catch {
       // Stats won't show but validation still works
@@ -395,6 +334,34 @@ export function QuestionnairePage() {
 
   // ── Render ──────────────────────────────────────────────
 
+  if (!teamNameConfirmed) {
+    return (
+      <div className="questionnaire-page">
+        <div className="q-team-overlay">
+          <div className="q-team-popup">
+            <h2 className="q-team-title">NOM D'ÉQUIPE</h2>
+            <input
+              type="text"
+              className="q-input q-team-input"
+              placeholder="Entrez le nom de votre équipe"
+              value={teamName}
+              onChange={e => setTeamName(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Enter' && teamName.trim()) setTeamNameConfirmed(true) }}
+              autoFocus
+            />
+            <button
+              className="q-btn q-btn-validate"
+              onClick={() => setTeamNameConfirmed(true)}
+              disabled={!teamName.trim()}
+            >
+              COMMENCER
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="questionnaire-page">
       <div className="q-container">
@@ -403,7 +370,7 @@ export function QuestionnairePage() {
 
         {validated && (
           <div className={`q-score ${score === MAX_SCORE ? 'q-score--perfect' : ''}`}>
-            {score} / {MAX_SCORE} points
+            {score} points
           </div>
         )}
 

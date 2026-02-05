@@ -1,35 +1,20 @@
-import { ColorPhase } from "./useBatteryLabo";
-
 interface ClusterProps {
   charge: number;
   index: number;
   isActive: boolean;
-  colorPhase: ColorPhase;
+  colorPhase: string;
   isWarning: boolean;
-}
-
-// Détermine la couleur en fonction du niveau de charge
-function getChargeColor(charge: number): string {
-  if (charge <= 25) return "charge-critical";
-  if (charge <= 50) return "charge-danger";
-  if (charge <= 75) return "charge-caution";
-  return "charge-safe";
 }
 
 export function Cluster({
   charge,
   index,
   isActive,
-  colorPhase,
-  isWarning,
 }: ClusterProps) {
-  const chargeColorClass = getChargeColor(charge);
-
   const gaugeClassName = [
     "cluster-gauge",
-    chargeColorClass,
-    isActive ? `charging phase-${colorPhase}` : "",
-    isWarning ? "warning" : "",
+    "charge-safe",
+    isActive ? "charging phase-safe" : "",
   ]
     .filter(Boolean)
     .join(" ");

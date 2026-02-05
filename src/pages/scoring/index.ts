@@ -1,0 +1,1 @@
+export { ScoringPage } from './ScoringPage'

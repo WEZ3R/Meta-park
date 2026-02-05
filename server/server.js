@@ -23,7 +23,11 @@ let state = {
 const PASSWORD = '1234'
 
 // Questionnaire stats: { [questionId]: { total, correct } }
-const STATS_FILE = path.join(__dirname, 'data/questionnaire-stats.json')
+const DATA_DIR = path.join(__dirname, 'data')
+if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true })
+
+const STATS_FILE = path.join(DATA_DIR, 'questionnaire-stats.json')
+const SCORES_FILE = path.join(DATA_DIR, 'questionnaire-scores.json')
 
 function loadStats() {
   try {
@@ -44,7 +48,28 @@ function saveStats() {
   }
 }
 
+// Scores: array of { teamName, score, timestamp }
+function loadScores() {
+  try {
+    if (fs.existsSync(SCORES_FILE)) {
+      return JSON.parse(fs.readFileSync(SCORES_FILE, 'utf-8'))
+    }
+  } catch (e) {
+    console.error('Failed to load scores:', e)
+  }
+  return []
+}
+
+function saveScores() {
+  try {
+    fs.writeFileSync(SCORES_FILE, JSON.stringify(questionnaireScores, null, 2))
+  } catch (e) {
+    console.error('Failed to save scores:', e)
+  }
+}
+
 let questionnaireStats = loadStats()
+let questionnaireScores = loadScores()
 
 // Middleware
 app.use(cors())
@@ -121,7 +146,7 @@ app.post('/api/setBlackScreenOpacity', (req, res) => {
 
 // Questionnaire submit
 app.post('/api/questionnaire/submit', (req, res) => {
-  const { results } = req.body
+  const { results, teamName, score } = req.body
   if (!results || typeof results !== 'object') {
     return res.status(400).json({ error: 'results must be an object' })
   }
@@ -133,6 +158,13 @@ app.post('/api/questionnaire/submit', (req, res) => {
     if (correct) questionnaireStats[id].correct++
   }
   saveStats()
+
+  // Save team score
+  if (teamName && typeof score === 'number') {
+    questionnaireScores.push({ teamName, score, timestamp: Date.now() })
+    saveScores()
+  }
+
   res.json({ success: true, stats: questionnaireStats })
 })
 
@@ -141,6 +173,32 @@ app.get('/api/questionnaire/stats', (req, res) => {
 })
 
 app.post('/api/questionnaire/reset', (req, res) => {
+  questionnaireStats = {}
+  saveStats()
+  res.json({ success: true })
+})
+
+// Scoring endpoints
+app.get('/api/scores', (req, res) => {
+  res.json({ scores: questionnaireScores })
+})
+
+app.post('/api/scores/reset', (req, res) => {
+  questionnaireScores = []
+  saveScores()
+  res.json({ success: true })
+})
+
+// Reset all
+app.post('/api/reset-all', (req, res) => {
+  state = {
+    isShutdown: false,
+    blackScreenOpacity: 0,
+    currentCamera: 1,
+    startTime: Date.now(),
+    phase: 0,
+    vitals: [true, true, true]
+  }
   questionnaireStats = {}
   saveStats()
   res.json({ success: true })

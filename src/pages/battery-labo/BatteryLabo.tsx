@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback, useState } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import "./BatteryLabo.css";
 import { useBatteryLabo } from "./useBatteryLabo";
 import { Cluster } from "./Cluster";
@@ -8,7 +8,6 @@ const QUICK_FADE_DURATION = 300; // 300ms pour fondue rapide
 const WORKING_VOLUME = 0.5; // Volume de working-generator (start est 2x plus fort à 1.0)
 const START_PLAYBACK_RATE = 1.75; // start joue 0.75x plus vite
 const WORKING_START_DELAY = 3000; // 3 secondes de délai avant working-generator
-const POPUP_HIDE_DELAY = 2000; // 2 secondes après relâchement du levier
 
 export function BatteryLabo() {
   const { status } = useApp();
@@ -17,30 +16,21 @@ export function BatteryLabo() {
   const startAudioRef = useRef<HTMLAudioElement | null>(null);
   const workingAudioRef = useRef<HTMLAudioElement | null>(null);
   const stoppingAudioRef = useRef<HTMLAudioElement | null>(null);
-  const alertAudioRef = useRef<HTMLAudioElement | null>(null);
   const fadeIntervalRef = useRef<number | null>(null);
   const workingFadeIntervalRef = useRef<number | null>(null);
   const stoppingFadeIntervalRef = useRef<number | null>(null);
-  const alertFadeIntervalRef = useRef<number | null>(null);
   const workingDelayTimeoutRef = useRef<number | null>(null);
-  const popupHideTimeoutRef = useRef<number | null>(null);
   const wasChargingRef = useRef(false);
   const hadBatteryRef = useRef(false);
   const wasAbove2Ref = useRef(true);
   const stoppingPlayedRef = useRef(false);
 
-  const [visiblePopup, setVisiblePopup] = useState(false);
-  const alertPlayingRef = useRef(false);
-
   const {
     clusters,
     isCharging,
     currentCluster,
-    isWarning,
     colorPhase,
     cooldownStartTime,
-    pressure,
-    showUrgentPopup,
   } = useBatteryLabo(isShutdown);
 
   const hasBattery = clusters[0] >= 1;
@@ -89,21 +79,16 @@ export function BatteryLabo() {
     startAudioRef.current = new Audio("/audio/start-generator.wav");
     workingAudioRef.current = new Audio("/audio/working-generator.wav");
     stoppingAudioRef.current = new Audio("/audio/stopping-generator.wav");
-    alertAudioRef.current = new Audio("/audio/alert-generator.wav");
     workingAudioRef.current.loop = true;
-    alertAudioRef.current.loop = true;
 
     return () => {
       if (fadeIntervalRef.current) clearInterval(fadeIntervalRef.current);
       if (workingFadeIntervalRef.current) clearInterval(workingFadeIntervalRef.current);
       if (stoppingFadeIntervalRef.current) clearInterval(stoppingFadeIntervalRef.current);
-      if (alertFadeIntervalRef.current) clearInterval(alertFadeIntervalRef.current);
       if (workingDelayTimeoutRef.current) clearTimeout(workingDelayTimeoutRef.current);
-      if (popupHideTimeoutRef.current) clearTimeout(popupHideTimeoutRef.current);
       startAudioRef.current?.pause();
       workingAudioRef.current?.pause();
       stoppingAudioRef.current?.pause();
-      alertAudioRef.current?.pause();
     };
   }, []);
 
@@ -213,72 +198,10 @@ export function BatteryLabo() {
     wasAbove2Ref.current = !isBelow2;
   }, [clusters, fadeAudio]);
 
-  // Gestion de la popup d'urgence et du son alert-generator
-  useEffect(() => {
-    const alertAudio = alertAudioRef.current;
-    if (!alertAudio) return;
-
-    // Seuil atteint: afficher popup et jouer le son
-    if (showUrgentPopup) {
-      // Annuler le timeout de masquage si existant
-      if (popupHideTimeoutRef.current) {
-        clearTimeout(popupHideTimeoutRef.current);
-        popupHideTimeoutRef.current = null;
-      }
-
-      setVisiblePopup(true);
-
-      // Jouer le son alert SEULEMENT si pas déjà en lecture
-      if (!alertPlayingRef.current) {
-        alertPlayingRef.current = true;
-        alertAudio.currentTime = 0;
-        alertAudio.volume = 0;
-        alertAudio.play().then(() => {
-          fadeAudio(alertAudio, 0, 1, QUICK_FADE_DURATION, alertFadeIntervalRef);
-        }).catch(console.error);
-      }
-    }
-  }, [showUrgentPopup, fadeAudio]);
-
-  // Gestion de la fermeture de la popup (2s après relâchement)
-  useEffect(() => {
-    const alertAudio = alertAudioRef.current;
-    if (!alertAudio) return;
-
-    // Si popup visible mais seuil plus atteint: démarrer le délai de 2s
-    if (visiblePopup && !showUrgentPopup && !popupHideTimeoutRef.current) {
-      popupHideTimeoutRef.current = window.setTimeout(() => {
-        setVisiblePopup(false);
-        alertPlayingRef.current = false;
-        popupHideTimeoutRef.current = null;
-
-        // Fade out le son alert
-        if (!alertAudio.paused) {
-          fadeAudio(alertAudio, alertAudio.volume, 0, QUICK_FADE_DURATION, alertFadeIntervalRef, () => {
-            alertAudio.pause();
-            alertAudio.currentTime = 0;
-          });
-        }
-      }, POPUP_HIDE_DELAY);
-    }
-  }, [visiblePopup, showUrgentPopup, fadeAudio]);
-
-  // Déterminer le message de pression
-  const getPressureMessage = () => {
-    if (!isCharging && pressure === 0)
-      return { text: "EN ATTENTE", class: "idle" };
-    if (pressure < 40) return { text: "PRESSION STABLE", class: "safe" };
-    if (pressure < 65) return { text: "PRESSION MODÉRÉE", class: "caution" };
-    if (pressure < 85) return { text: "PRESSION ÉLEVÉE", class: "danger" };
-    return { text: "PRESSION CRITIQUE", class: "critical" };
-  };
-
-  const pressureInfo = getPressureMessage();
-
   return (
     <div className="battery-labo">
       <h1 className="self-center">
-        Niveau de charge de la batterie de secours
+        Tirer le levier pour charger la batterie de secours
       </h1>
 
       <div className="energy-clusters">
@@ -292,30 +215,10 @@ export function BatteryLabo() {
               (isCharging || cooldownStartTime !== null)
             }
             colorPhase={colorPhase}
-            isWarning={isWarning && currentCluster === index}
+            isWarning={false}
           />
         ))}
       </div>
-
-      {/* Message d'état de pression */}
-      <div className={`pressure-status ${pressureInfo.class}`}>
-        <div className="pressure-label">ÉTAT DE LA DYNAMO</div>
-        <div className="pressure-value">{pressureInfo.text}</div>
-        <div className="pressure-percent">{Math.round(pressure)}%</div>
-      </div>
-
-      {/* Popup d'urgence */}
-      {visiblePopup && (
-        <div className="urgent-popup">
-          <div className="urgent-popup-content">
-            <div className="urgent-icon">⚠️</div>
-            <div className="urgent-title">ALERTE SURCHAUFFE</div>
-            <div className="urgent-message">
-              RELÂCHEZ LE LEVIER IMMÉDIATEMENT
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

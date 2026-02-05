@@ -1,8 +1,8 @@
 import { ServerStatus } from '../types'
 
-let ip = '10.14.73.80' // Replace with your desired IP address
+let ip = '10.14.73.183' // Replace with your desired IP address
 
-const API_BASE = import.meta.env.DEV ? 'http://'+ip+':3001' : ''
+const API_BASE = import.meta.env.DEV ? 'http://'+ip+':8080' : ''
 
 export const api = {
   getStatus: async (): Promise<ServerStatus> => {
@@ -46,21 +46,31 @@ export const api = {
     return res.json()
   },
 
-  setBlackScreen: async (blackScreen: boolean): Promise<{ success: boolean; isBlackScreen: boolean }> => {
-    const res = await fetch(`${API_BASE}/api/setBlackScreen`, {
+  setBlackScreenOpacity: async (opacity: number): Promise<{ success: boolean; blackScreenOpacity: number }> => {
+    const res = await fetch(`${API_BASE}/api/setBlackScreenOpacity`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ blackScreen })
+      body: JSON.stringify({ opacity })
     })
     return res.json()
   },
 
-  submitQuestionnaire: async (results: Record<number, boolean>): Promise<{ success: boolean; stats: Record<number, { total: number; correct: number }> }> => {
+  submitQuestionnaire: async (results: Record<number, boolean>, teamName: string, score: number): Promise<{ success: boolean; stats: Record<number, { total: number; correct: number }> }> => {
     const res = await fetch(`${API_BASE}/api/questionnaire/submit`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ results })
+      body: JSON.stringify({ results, teamName, score })
     })
+    return res.json()
+  },
+
+  getScores: async (): Promise<{ scores: { teamName: string; score: number; timestamp: number }[] }> => {
+    const res = await fetch(`${API_BASE}/api/scores`)
+    return res.json()
+  },
+
+  resetAll: async (): Promise<{ success: boolean }> => {
+    const res = await fetch(`${API_BASE}/api/reset-all`, { method: 'POST' })
     return res.json()
   },
 

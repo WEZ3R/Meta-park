@@ -14,6 +14,7 @@ import { QuestionnairePage } from './pages/questionnaire'
 import { PWALauncherPage } from './pages/pwaLauncher'
 import { LogsPage } from './pages/logs'
 import { BatteryLabo } from "./pages/battery-labo";
+import { ScoringPage } from "./pages/scoring";
 import './App.css'
 
 
@@ -35,6 +36,7 @@ function AppRoutes() {
       <Route path="/logs" element={<LogsPage />} />
       <Route path="/" element={<PWALauncherPage />} />
       <Route path="/battery-labo" element={<BatteryLabo />} />
+      <Route path="/scoring" element={<ScoringPage />} />
     </Routes>
   );
 }

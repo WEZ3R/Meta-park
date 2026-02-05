@@ -1,0 +1,137 @@
+.scoring-page {
+  width: 100vw;
+  height: 100vh;
+  background-color: #0A1031;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.3) 1px, transparent 1px);
+  background-size: 24px 24px;
+  font-family: 'Handjet', cursive;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3rem 2rem;
+  overflow-y: auto;
+}
+
+.scoring-header {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.scoring-title {
+  font-size: 100px;
+  font-weight: 900;
+  letter-spacing: 6px;
+  margin: 0;
+  text-align: center;
+}
+
+.scoring-logo {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 120px;
+  width: auto;
+}
+
+.scoring-table-wrapper {
+  width: 100%;
+  max-width: 900px;
+}
+
+.scoring-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.scoring-th {
+  font-size: 70px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  padding: 12px 24px;
+  text-align: left;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+.scoring-th-rank {
+  width: 80px;
+  text-align: center;
+}
+
+.scoring-th-score {
+  text-align: right;
+}
+
+.scoring-td {
+  font-size: 45px;
+  font-weight: 400;
+  padding: 10px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.scoring-td-rank {
+  text-align: center;
+  color: #94a3b8;
+}
+
+.scoring-td-score {
+  text-align: right;
+}
+
+.scoring-row:last-child .scoring-td {
+  border-bottom: none;
+}
+
+.scoring-row--last .scoring-td {
+  color: #fbbf24;
+}
+
+.scoring-empty {
+  text-align: center;
+  color: #94a3b8;
+  padding: 2rem;
+}
+
+/* Dernier passage */
+
+.scoring-last {
+  width: 100%;
+  max-width: 900px;
+  margin-top: 2rem;
+  padding: 16px 24px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+}
+
+.scoring-last-label {
+  font-size: 45px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #94a3b8;
+  margin-bottom: 8px;
+}
+
+.scoring-last-entry {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.scoring-last-team {
+  font-size: 45px;
+}
+
+.scoring-last-score {
+  font-size: 45px;
+}

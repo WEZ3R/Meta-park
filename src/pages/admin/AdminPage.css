@@ -203,3 +203,11 @@
   background: #3b82f6;
   color: #fff;
 }
+
+.btn-reset-all {
+  width: 100%;
+  background: #dc2626;
+  color: #fff;
+  font-size: 1.1rem;
+  padding: 1rem;
+}
