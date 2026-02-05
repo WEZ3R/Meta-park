@@ -35,6 +35,30 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
 
   const prevBatteryRef = useRef(100);
   const hasDroppedBelow20Ref = useRef(false);
+  const spaceKeyPressedRef = useRef(false);
+
+  // Gestion de la touche espace
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === "Space" && !spaceKeyPressedRef.current) {
+        spaceKeyPressedRef.current = true;
+      }
+    };
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.code === "Space") {
+        spaceKeyPressedRef.current = false;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
 
   // Gamepad polling
   useEffect(() => {
@@ -59,7 +83,8 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
         }
       }
 
-      setIsCharging(leverPressed);
+      // Combiner gamepad et touche espace
+      setIsCharging(leverPressed || spaceKeyPressedRef.current);
       animationId = requestAnimationFrame(pollGamepads);
     };
     pollGamepads();
@@ -98,11 +123,7 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
     const interval = setInterval(() => {
       let newPressure = state.pressure;
 
-      if (
-        state.isCharging &&
-        state.chargingStartTime &&
-        state.stopChargingAt
-      ) {
+      if (state.isCharging && state.chargingStartTime && state.stopChargingAt) {
         // En charge: augmenter la pression
         const totalTime = state.stopChargingAt - state.chargingStartTime;
         const elapsed = Date.now() - state.chargingStartTime;

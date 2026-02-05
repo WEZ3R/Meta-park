@@ -43,7 +43,7 @@ export function BatteryLabo() {
       to: number,
       duration: number,
       intervalRef: React.MutableRefObject<number | null>,
-      onComplete?: () => void
+      onComplete?: () => void,
     ) => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
@@ -58,7 +58,10 @@ export function BatteryLabo() {
 
       intervalRef.current = window.setInterval(() => {
         currentStep++;
-        const newVolume = Math.max(0, Math.min(1, from + volumeStep * currentStep));
+        const newVolume = Math.max(
+          0,
+          Math.min(1, from + volumeStep * currentStep),
+        );
         audio.volume = newVolume;
 
         if (currentStep >= steps) {
@@ -71,21 +74,24 @@ export function BatteryLabo() {
         }
       }, stepDuration);
     },
-    []
+    [],
   );
 
   // Initialisation des audios
   useEffect(() => {
-    startAudioRef.current = new Audio("/audio/start-generator.wav");
+    startAudioRef.current = new Audio("/audio/start-generator.mp3");
     workingAudioRef.current = new Audio("/audio/working-generator.wav");
     stoppingAudioRef.current = new Audio("/audio/stopping-generator.wav");
     workingAudioRef.current.loop = true;
 
     return () => {
       if (fadeIntervalRef.current) clearInterval(fadeIntervalRef.current);
-      if (workingFadeIntervalRef.current) clearInterval(workingFadeIntervalRef.current);
-      if (stoppingFadeIntervalRef.current) clearInterval(stoppingFadeIntervalRef.current);
-      if (workingDelayTimeoutRef.current) clearTimeout(workingDelayTimeoutRef.current);
+      if (workingFadeIntervalRef.current)
+        clearInterval(workingFadeIntervalRef.current);
+      if (stoppingFadeIntervalRef.current)
+        clearInterval(stoppingFadeIntervalRef.current);
+      if (workingDelayTimeoutRef.current)
+        clearTimeout(workingDelayTimeoutRef.current);
       startAudioRef.current?.pause();
       workingAudioRef.current?.pause();
       stoppingAudioRef.current?.pause();
@@ -106,17 +112,30 @@ export function BatteryLabo() {
 
       // Quand le son se termine, faire un fade out rapide
       startAudio.onended = () => {
-        fadeAudio(startAudio, startAudio.volume, 0, QUICK_FADE_DURATION, fadeIntervalRef);
+        fadeAudio(
+          startAudio,
+          startAudio.volume,
+          0,
+          QUICK_FADE_DURATION,
+          fadeIntervalRef,
+        );
       };
     }
 
     // Relâchement du levier: fade out rapide pour arrêter le son
     if (!isCharging && wasChargingRef.current) {
       if (!startAudio.paused) {
-        fadeAudio(startAudio, startAudio.volume, 0, QUICK_FADE_DURATION, fadeIntervalRef, () => {
-          startAudio.pause();
-          startAudio.currentTime = 0;
-        });
+        fadeAudio(
+          startAudio,
+          startAudio.volume,
+          0,
+          QUICK_FADE_DURATION,
+          fadeIntervalRef,
+          () => {
+            startAudio.pause();
+            startAudio.currentTime = 0;
+          },
+        );
       }
     }
 
@@ -138,9 +157,18 @@ export function BatteryLabo() {
       workingDelayTimeoutRef.current = window.setTimeout(() => {
         workingAudio.currentTime = 0;
         workingAudio.volume = 0;
-        workingAudio.play().then(() => {
-          fadeAudio(workingAudio, 0, WORKING_VOLUME, QUICK_FADE_DURATION, workingFadeIntervalRef);
-        }).catch(console.error);
+        workingAudio
+          .play()
+          .then(() => {
+            fadeAudio(
+              workingAudio,
+              0,
+              WORKING_VOLUME,
+              QUICK_FADE_DURATION,
+              workingFadeIntervalRef,
+            );
+          })
+          .catch(console.error);
       }, WORKING_START_DELAY);
     }
 
@@ -153,10 +181,17 @@ export function BatteryLabo() {
       }
 
       if (!workingAudio.paused) {
-        fadeAudio(workingAudio, workingAudio.volume, 0, QUICK_FADE_DURATION, workingFadeIntervalRef, () => {
-          workingAudio.pause();
-          workingAudio.currentTime = 0;
-        });
+        fadeAudio(
+          workingAudio,
+          workingAudio.volume,
+          0,
+          QUICK_FADE_DURATION,
+          workingFadeIntervalRef,
+          () => {
+            workingAudio.pause();
+            workingAudio.currentTime = 0;
+          },
+        );
       }
     }
 
@@ -176,18 +211,34 @@ export function BatteryLabo() {
     if (isBelow2 && wasAbove2Ref.current && !stoppingPlayedRef.current) {
       stoppingAudio.currentTime = 0;
       stoppingAudio.volume = 0;
-      stoppingAudio.play().then(() => {
-        fadeAudio(stoppingAudio, 0, WORKING_VOLUME, QUICK_FADE_DURATION, stoppingFadeIntervalRef);
-      }).catch(console.error);
+      stoppingAudio
+        .play()
+        .then(() => {
+          fadeAudio(
+            stoppingAudio,
+            0,
+            WORKING_VOLUME,
+            QUICK_FADE_DURATION,
+            stoppingFadeIntervalRef,
+          );
+        })
+        .catch(console.error);
       stoppingPlayedRef.current = true;
     }
 
     // Batterie atteint 0%: fade out rapide
     if (isAtZero && !stoppingAudio.paused) {
-      fadeAudio(stoppingAudio, stoppingAudio.volume, 0, QUICK_FADE_DURATION, stoppingFadeIntervalRef, () => {
-        stoppingAudio.pause();
-        stoppingAudio.currentTime = 0;
-      });
+      fadeAudio(
+        stoppingAudio,
+        stoppingAudio.volume,
+        0,
+        QUICK_FADE_DURATION,
+        stoppingFadeIntervalRef,
+        () => {
+          stoppingAudio.pause();
+          stoppingAudio.currentTime = 0;
+        },
+      );
     }
 
     // Reset quand la batterie remonte au-dessus de 2%
