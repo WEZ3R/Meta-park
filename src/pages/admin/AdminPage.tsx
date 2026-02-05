@@ -12,6 +12,7 @@ export function AdminPage() {
   const { status, updateShutdown, setPhase, setVitals } = useApp()
   const currentPhase = status?.phase ?? 0
   const vitals = status?.vitals ?? [true, true, true]
+  const batteryLevel = status?.batteryLevel ?? 100
 
   const toggleVital = (index: number) => {
     const updated = [...vitals]
@@ -19,8 +20,28 @@ export function AdminPage() {
     setVitals(updated)
   }
 
+  const getBatteryColor = (level: number) => {
+    if (level <= 20) return '#ef4444'
+    if (level <= 50) return '#f59e0b'
+    return '#4ade80'
+  }
+
   return (
     <div className="admin-page">
+      <div className="battery-indicator">
+        <div className="battery-icon">
+          <div
+            className="battery-fill"
+            style={{
+              width: `${batteryLevel}%`,
+              backgroundColor: getBatteryColor(batteryLevel)
+            }}
+          />
+        </div>
+        <span className="battery-text" style={{ color: getBatteryColor(batteryLevel) }}>
+          {Math.round(batteryLevel)}%
+        </span>
+      </div>
       <div className="admin-panel">
         <h1 className="admin-title">Admin Panel</h1>
 

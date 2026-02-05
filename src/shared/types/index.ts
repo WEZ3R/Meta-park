@@ -6,6 +6,7 @@ export interface ServerStatus {
   serverTime: number
   vitals: boolean[]
   phase: number
+  batteryLevel: number // 0-100
 }
 
 export interface AppState {

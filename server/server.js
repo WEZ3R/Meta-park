@@ -17,7 +17,8 @@ let state = {
   currentCamera: 1,
   startTime: Date.now(),
   phase: 0,
-  vitals: [true, true, true]
+  vitals: [true, true, true],
+  batteryLevel: 100 // 0-100
 }
 
 const PASSWORD = '1234'
@@ -104,7 +105,8 @@ app.get('/api/status', (req, res) => {
     startTime: state.startTime,
     serverTime: Date.now(),
     phase: state.phase,
-    vitals: state.vitals
+    vitals: state.vitals,
+    batteryLevel: state.batteryLevel
   })
 })
 
@@ -155,6 +157,16 @@ app.post('/api/setBlackScreenOpacity', (req, res) => {
     res.json({ success: true, blackScreenOpacity: state.blackScreenOpacity })
   } else {
     res.status(400).json({ error: 'opacity must be a number between 0 and 100' })
+  }
+})
+
+app.post('/api/setBatteryLevel', (req, res) => {
+  const { level } = req.body
+  if (typeof level === 'number' && level >= 0 && level <= 100) {
+    state.batteryLevel = level
+    res.json({ success: true, batteryLevel: state.batteryLevel })
+  } else {
+    res.status(400).json({ error: 'level must be a number between 0 and 100' })
   }
 })
 
@@ -211,7 +223,8 @@ app.post('/api/reset-all', (req, res) => {
     currentCamera: 1,
     startTime: Date.now(),
     phase: 0,
-    vitals: [true, true, true]
+    vitals: [true, true, true],
+    batteryLevel: 100
   }
   questionnaireStats = {}
   saveStats()

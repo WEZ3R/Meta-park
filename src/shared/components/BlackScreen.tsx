@@ -8,7 +8,7 @@ export function BlackScreen() {
 
   const pathname = location.pathname;
   const isBatteryPage = pathname === "/battery-labo";
-  const isExcluded = pathname === "/dino-chase" || pathname === "/questionnaire" || pathname === "/questionnaire2" || pathname === "/scoring";
+  const isExcluded = pathname === "/admin" || pathname === "/dino-chase" || pathname === "/questionnaire" || pathname === "/questionnaire2" || pathname === "/scoring";
 
   if (isExcluded) return null;
 

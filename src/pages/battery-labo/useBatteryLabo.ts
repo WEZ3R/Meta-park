@@ -245,6 +245,11 @@ export function useBatteryLabo(isShutdown: boolean = false): BatteryLaboState {
       console.error("Erreur lors de la mise à jour de l'opacité:", err);
     });
 
+    // Envoyer le niveau de batterie au serveur
+    api.setBatteryLevel(Math.round(currentCharge)).catch((err) => {
+      console.error("Erreur lors de la mise à jour du niveau de batterie:", err);
+    });
+
     prevBatteryRef.current = currentCharge;
   }, [clusters]);
 

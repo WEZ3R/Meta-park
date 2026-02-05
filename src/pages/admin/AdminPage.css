@@ -1,10 +1,59 @@
 .admin-page {
+  position: relative;
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   background: #1a1a2e;
   padding: 2rem;
+}
+
+.battery-indicator {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(15, 52, 96, 0.95);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 100;
+}
+
+.battery-icon {
+  width: 40px;
+  height: 20px;
+  border: 2px solid #94a3b8;
+  border-radius: 3px;
+  position: relative;
+  background: #1a1a2e;
+}
+
+.battery-icon::after {
+  content: '';
+  position: absolute;
+  right: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 10px;
+  background: #94a3b8;
+  border-radius: 0 2px 2px 0;
+}
+
+.battery-fill {
+  height: 100%;
+  border-radius: 1px;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.battery-text {
+  font-size: 1rem;
+  font-weight: bold;
+  min-width: 45px;
+  text-align: right;
 }
 
 .admin-panel {
