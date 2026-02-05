@@ -19,6 +19,15 @@ export interface AuthState {
   loading: boolean
 }
 
+export interface QuestionnaireSession {
+  teamName: string
+  answers: Record<number, string | string[]>
+  started: boolean
+  validated: boolean
+  score: number | null
+  stats: Record<number, { total: number; correct: number }> | null
+}
+
 export interface ClientError {
   id: string
   message: string

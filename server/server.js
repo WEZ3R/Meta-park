@@ -71,6 +71,16 @@ function saveScores() {
 let questionnaireStats = loadStats()
 let questionnaireScores = loadScores()
 
+// Questionnaire live session (sync between tablets)
+let questionnaireSession = {
+  teamName: '',
+  answers: {},    // { [questionId]: value }
+  started: false,
+  validated: false,
+  score: null,
+  stats: null
+}
+
 // Client errors storage (in-memory, limited to 100)
 let clientErrors = []
 const MAX_ERRORS = 100
@@ -205,6 +215,14 @@ app.post('/api/reset-all', (req, res) => {
   }
   questionnaireStats = {}
   saveStats()
+  questionnaireSession = {
+    teamName: '',
+    answers: {},
+    started: false,
+    validated: false,
+    score: null,
+    stats: null
+  }
   res.json({ success: true })
 })
 
@@ -215,6 +233,55 @@ app.post('/api/login', (req, res) => {
   } else {
     res.status(401).json({ success: false, error: 'Invalid password' })
   }
+})
+
+// Questionnaire session endpoints (sync between tablets)
+app.get('/api/questionnaire/session', (req, res) => {
+  res.json(questionnaireSession)
+})
+
+app.post('/api/questionnaire/session/team', (req, res) => {
+  const { teamName } = req.body
+  if (typeof teamName === 'string') {
+    questionnaireSession.teamName = teamName
+    res.json({ success: true, teamName })
+  } else {
+    res.status(400).json({ error: 'teamName must be a string' })
+  }
+})
+
+app.post('/api/questionnaire/session/start', (req, res) => {
+  questionnaireSession.started = true
+  res.json({ success: true })
+})
+
+app.post('/api/questionnaire/session/answer', (req, res) => {
+  const { questionId, value } = req.body
+  if (questionId === undefined) {
+    return res.status(400).json({ error: 'questionId is required' })
+  }
+  questionnaireSession.answers[questionId] = value
+  res.json({ success: true })
+})
+
+app.post('/api/questionnaire/session/validate', (req, res) => {
+  const { score, stats } = req.body
+  questionnaireSession.validated = true
+  questionnaireSession.score = score ?? null
+  questionnaireSession.stats = stats ?? null
+  res.json({ success: true })
+})
+
+app.post('/api/questionnaire/session/reset', (req, res) => {
+  questionnaireSession = {
+    teamName: '',
+    answers: {},
+    started: false,
+    validated: false,
+    score: null,
+    stats: null
+  }
+  res.json({ success: true })
 })
 
 // Client errors endpoints

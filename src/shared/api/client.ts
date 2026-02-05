@@ -1,4 +1,4 @@
-import { ServerStatus, ClientError } from '../types'
+import { ServerStatus, ClientError, QuestionnaireSession } from '../types'
 
 let ip = '10.14.73.183' // Replace with your desired IP address
 
@@ -99,6 +99,49 @@ export const api = {
 
   clearErrors: async (): Promise<{ success: boolean }> => {
     const res = await fetch(`${API_BASE}/api/errors`, { method: 'DELETE' })
+    return res.json()
+  },
+
+  // Questionnaire session sync
+  getSession: async (): Promise<QuestionnaireSession> => {
+    const res = await fetch(`${API_BASE}/api/questionnaire/session`)
+    return res.json()
+  },
+
+  setSessionTeam: async (teamName: string): Promise<{ success: boolean }> => {
+    const res = await fetch(`${API_BASE}/api/questionnaire/session/team`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ teamName })
+    })
+    return res.json()
+  },
+
+  startSession: async (): Promise<{ success: boolean }> => {
+    const res = await fetch(`${API_BASE}/api/questionnaire/session/start`, { method: 'POST' })
+    return res.json()
+  },
+
+  setSessionAnswer: async (questionId: number, value: string | string[]): Promise<{ success: boolean }> => {
+    const res = await fetch(`${API_BASE}/api/questionnaire/session/answer`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ questionId, value })
+    })
+    return res.json()
+  },
+
+  validateSession: async (score: number, stats: Record<number, { total: number; correct: number }> | null): Promise<{ success: boolean }> => {
+    const res = await fetch(`${API_BASE}/api/questionnaire/session/validate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ score, stats })
+    })
+    return res.json()
+  },
+
+  resetSession: async (): Promise<{ success: boolean }> => {
+    const res = await fetch(`${API_BASE}/api/questionnaire/session/reset`, { method: 'POST' })
     return res.json()
   }
 }

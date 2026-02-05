@@ -11,7 +11,7 @@ import { CameraPublique2Page } from './pages/cameraPublique2'
 import { VitalsPage } from './pages/vitals'
 import { RetranscriptionDirectPage } from './pages/retranscriptionDirect'
 import { DinoChaseGame } from './pages/dinoChase'
-import { QuestionnairePage } from './pages/questionnaire'
+import { QuestionnairePage, QuestionnairePage2 } from './pages/questionnaire'
 import { PWALauncherPage } from './pages/pwaLauncher'
 import { LogsPage } from './pages/logs'
 import { BatteryLabo } from "./pages/battery-labo";
@@ -34,6 +34,7 @@ function AppRoutes() {
       />
       <Route path="/dino-chase" element={<DinoChaseGame />} />
       <Route path="/questionnaire" element={<QuestionnairePage />} />
+      <Route path="/questionnaire2" element={<QuestionnairePage2 />} />
       <Route path="/logs" element={<LogsPage />} />
       <Route path="/" element={<PWALauncherPage />} />
       <Route path="/battery-labo" element={<BatteryLabo />} />

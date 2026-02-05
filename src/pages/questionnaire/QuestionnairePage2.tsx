@@ -7,34 +7,41 @@ import './QuestionnairePage.css'
 
 type Stats = Record<number, { total: number; correct: number }>
 
-export function QuestionnairePage() {
+export function QuestionnairePage2() {
   const { status } = useApp()
   const phase = status?.phase ?? 0
   const isShutdown = status?.isShutdown ?? false
 
+  const [teamName, setTeamName] = useState('')
+  const [teamNameConfirmed, setTeamNameConfirmed] = useState(false)
+  const [sessionStarted, setSessionStarted] = useState(false)
   const [answers, setAnswers] = useState<Record<number, string | string[]>>({})
   const [validated, setValidated] = useState(false)
   const [stats, setStats] = useState<Stats | null>(null)
-  const [submitting, setSubmitting] = useState(false)
-  const [teamName, setTeamName] = useState('')
-  const lastSyncRef = useRef<Record<number, number>>({}) // track when we last changed each answer locally
+  const [sessionScore, setSessionScore] = useState<number | null>(null)
+  const lastSyncRef = useRef<Record<number, number>>({})
 
-  // Mark session as started + start syncing
+  // Once team name confirmed, send it to server
   useEffect(() => {
-    api.startSession().catch(() => {})
-  }, [])
+    if (teamNameConfirmed && teamName.trim()) {
+      api.setSessionTeam(teamName.trim()).catch(() => {})
+    }
+  }, [teamNameConfirmed, teamName])
 
-  // Poll session for sync with questionnaire2
+  // Poll session for sync
   useEffect(() => {
+    if (!teamNameConfirmed) return
+
     const poll = async () => {
       try {
         const session = await api.getSession()
-        if (session.teamName) setTeamName(session.teamName)
-        if (session.validated && session.stats) {
+        if (session.started) setSessionStarted(true)
+        if (session.validated) {
           setValidated(true)
-          setStats(session.stats)
+          setSessionScore(session.score)
+          if (session.stats) setStats(session.stats)
         }
-        // Merge server answers (only for answers not recently changed locally)
+        // Merge server answers
         const now = Date.now()
         setAnswers(prev => {
           const merged = { ...prev }
@@ -52,17 +59,13 @@ export function QuestionnairePage() {
     poll()
     const id = setInterval(poll, 800)
     return () => clearInterval(id)
-  }, [])
+  }, [teamNameConfirmed])
 
   const updateAnswer = useCallback((id: number, value: string | string[]) => {
     lastSyncRef.current[id] = Date.now()
     setAnswers(prev => ({ ...prev, [id]: value }))
     api.setSessionAnswer(id, value).catch(() => {})
-    if (validated) {
-      setValidated(false)
-      setStats(null)
-    }
-  }, [validated])
+  }, [])
 
   const updateMultiAnswer = useCallback((id: number, index: number, value: string) => {
     lastSyncRef.current[id] = Date.now()
@@ -73,47 +76,13 @@ export function QuestionnairePage() {
       api.setSessionAnswer(id, next).catch(() => {})
       return { ...prev, [id]: next }
     })
-    if (validated) {
-      setValidated(false)
-      setStats(null)
-    }
-  }, [validated])
-
-  const handleValidate = async () => {
-    setSubmitting(true)
-    const results: Record<number, boolean> = {}
-    for (const q of QUESTIONS) {
-      results[q.id] = checkAnswer(q, answers[q.id] ?? getDefaultValue(q))
-    }
-    const finalScore = QUESTIONS.reduce((sum, q) => {
-      const correct = checkAnswer(q, answers[q.id] ?? getDefaultValue(q))
-      return sum + (correct ? (POINTS[q.id] ?? 3) : 0)
-    }, 0)
-    try {
-      const res = await api.submitQuestionnaire(results, teamName, finalScore)
-      setStats(res.stats)
-      await api.validateSession(finalScore, res.stats)
-    } catch {
-      // Stats won't show but validation still works
-    }
-    setValidated(true)
-    setSubmitting(false)
-  }
-
-  const handleReset = async () => {
-    setAnswers({})
-    setValidated(false)
-    setStats(null)
-    lastSyncRef.current = {}
-    await api.resetSession().catch(() => {})
-    await api.startSession().catch(() => {})
-  }
+  }, [])
 
   const score = validated
-    ? QUESTIONS.reduce((sum, q) => {
+    ? (sessionScore ?? QUESTIONS.reduce((sum, q) => {
         const correct = checkAnswer(q, answers[q.id] ?? getDefaultValue(q))
         return sum + (correct ? (POINTS[q.id] ?? 3) : 0)
-      }, 0)
+      }, 0))
     : 0
 
   // ── Guards ──────────────────────────────────────────────
@@ -122,7 +91,52 @@ export function QuestionnairePage() {
     return <ScreensaverVideo videoSrc="/videos/ERRORSIGNAL.mp4" />
   }
 
-  // ── Render ──────────────────────────────────────────────
+  // ── Team name popup ──────────────────────────────────────
+
+  if (!teamNameConfirmed) {
+    return (
+      <div className="questionnaire-page">
+        <div className="q-team-overlay">
+          <div className="q-team-popup">
+            <h2 className="q-team-title">NOM D'ÉQUIPE</h2>
+            <input
+              type="text"
+              className="q-input q-team-input"
+              placeholder="Entrez le nom de votre équipe"
+              value={teamName}
+              onChange={e => setTeamName(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Enter' && teamName.trim()) setTeamNameConfirmed(true) }}
+              autoFocus
+            />
+            <button
+              className="q-btn q-btn-validate"
+              onClick={() => setTeamNameConfirmed(true)}
+              disabled={!teamName.trim()}
+            >
+              COMMENCER
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // ── Waiting for questionnaire1 to start ──────────────────
+
+  if (!sessionStarted) {
+    return (
+      <div className="questionnaire-page">
+        <div className="q-team-overlay">
+          <div className="q-team-popup">
+            <h2 className="q-team-title">EN ATTENTE</h2>
+            <p className="q-team-wait">Le questionnaire va bientôt commencer...</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // ── Render questions (no validate button) ─────────────────
 
   return (
     <div className="questionnaire-page">
@@ -277,19 +291,6 @@ export function QuestionnairePage() {
               })}
             </div>
           ))}
-        </div>
-
-        <div className="q-actions">
-          <button className="q-btn q-btn-reset" onClick={handleReset}>
-            RÉINITIALISER
-          </button>
-          <button
-            className="q-btn q-btn-validate"
-            onClick={handleValidate}
-            disabled={validated || submitting}
-          >
-            {submitting ? 'ENVOI...' : 'VALIDER LE RAPPORT'}
-          </button>
         </div>
       </div>
     </div>

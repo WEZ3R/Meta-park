@@ -28,6 +28,15 @@ export function PWALauncherPage() {
             <span className="pwa-launcher__button-text">Questionnaire</span>
             <span className="pwa-launcher__button-desc">Rapport d'incident</span>
           </button>
+
+          <button
+            className="pwa-launcher__button pwa-launcher__button--questionnaire"
+            onClick={() => navigate('/questionnaire2')}
+          >
+            <span className="pwa-launcher__button-icon">📋</span>
+            <span className="pwa-launcher__button-text">Questionnaire 2</span>
+            <span className="pwa-launcher__button-desc">Tablette secondaire</span>
+          </button>
         </div>
       </div>
     </div>

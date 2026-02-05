@@ -336,6 +336,13 @@
   font-size: 1.4rem !important;
 }
 
+.q-team-wait {
+  font-size: 1.3rem;
+  color: #94a3b8;
+  text-align: center;
+  margin: 0;
+}
+
 /* Disabled inputs */
 
 .q-input:disabled,
