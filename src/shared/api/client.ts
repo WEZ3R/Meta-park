@@ -1,4 +1,4 @@
-import { ServerStatus } from '../types'
+import { ServerStatus, ClientError } from '../types'
 
 let ip = '10.14.73.183' // Replace with your desired IP address
 
@@ -80,6 +80,25 @@ export const api = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ password })
     })
+    return res.json()
+  },
+
+  logError: async (error: Omit<ClientError, 'id' | 'timestamp'>): Promise<{ success: boolean; error: ClientError }> => {
+    const res = await fetch(`${API_BASE}/api/errors`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(error)
+    })
+    return res.json()
+  },
+
+  getErrors: async (): Promise<{ errors: ClientError[] }> => {
+    const res = await fetch(`${API_BASE}/api/errors`)
+    return res.json()
+  },
+
+  clearErrors: async (): Promise<{ success: boolean }> => {
+    const res = await fetch(`${API_BASE}/api/errors`, { method: 'DELETE' })
     return res.json()
   }
 }
