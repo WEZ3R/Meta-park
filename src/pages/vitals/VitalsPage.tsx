@@ -78,6 +78,25 @@ export function VitalsPage() {
     setSeeking(false)
   }, [])
 
+  // Handle video errors - reload page on network errors
+  const handleVideoError = useCallback(() => {
+    const v = videoRef.current
+    if (!v) return
+    
+    const error = v.error
+    if (error) {
+      switch (error.code) {
+        case MediaError.MEDIA_ERR_NETWORK:
+        case MediaError.MEDIA_ERR_ABORTED:
+          console.log('Erreur réseau détectée, rafraîchissement de la page...')
+          window.location.reload()
+          break
+        default:
+          console.error('Erreur vidéo:', error)
+      }
+    }
+  }, [])
+
   // Update progress from video timeupdate
   useEffect(() => {
     const v = videoRef.current
@@ -105,6 +124,18 @@ export function VitalsPage() {
     }
   }, [])
 
+  // Handle video errors
+  useEffect(() => {
+    const v = videoRef.current
+    if (!v) return
+    
+    v.addEventListener('error', handleVideoError)
+    
+    return () => {
+      v.removeEventListener('error', handleVideoError)
+    }
+  }, [handleVideoError])
+
 
   return (
     <div className="vitals-page">
@@ -116,6 +147,7 @@ export function VitalsPage() {
         loop
         muted
         playsInline
+        preload="auto"
       />
 
       <div className="vitals-controls">

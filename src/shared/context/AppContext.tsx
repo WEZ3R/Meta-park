@@ -21,8 +21,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const lastLocalUpdate = useRef(0)
+  const isFetchingRef = useRef(false)
 
   const fetchStatus = useCallback(async () => {
+    // Skip if already fetching to prevent accumulation
+    if (isFetchingRef.current) {
+      return
+    }
+    
+    isFetchingRef.current = true
+    
     try {
       const data = await api.getStatus()
       const localPhase = localStorage.getItem('metapark_phase')
@@ -44,7 +52,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       }
       setLoading(false)
       setError(null)
-    } catch {
+    } catch (err) {
       const localPhase = localStorage.getItem('metapark_phase')
       const localVitals = localStorage.getItem('metapark_vitals')
       const localShutdown = localStorage.getItem('metapark_shutdown')
@@ -62,7 +70,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
         ...(localVitals !== null ? { vitals: JSON.parse(localVitals) } : {}),
       }))
       setLoading(false)
-      setError('Failed to connect to server')
+      // Only log error if not a network change error
+      if (err instanceof Error && !err.message.includes('ERR_NETWORK_CHANGED')) {
+        setError('Failed to connect to server')
+      }
+    } finally {
+      isFetchingRef.current = false
     }
   }, [])
 
