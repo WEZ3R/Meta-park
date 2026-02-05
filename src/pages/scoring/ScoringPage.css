@@ -15,7 +15,7 @@
 
 .scoring-header {
   width: 100%;
-  max-width: 900px;
+  max-width: 1200px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -42,7 +42,7 @@
 
 .scoring-table-wrapper {
   width: 100%;
-  max-width: 900px;
+  max-width: 1200px;
 }
 
 .scoring-table {
@@ -106,7 +106,7 @@
 
 .scoring-last {
   width: 100%;
-  max-width: 900px;
+  max-width: 1200px;
   margin-top: 2rem;
   padding: 16px 24px;
   background: rgba(255, 255, 255, 0.04);
