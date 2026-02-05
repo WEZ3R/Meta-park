@@ -19,10 +19,14 @@ export function QuestionnairePage() {
   const [teamName, setTeamName] = useState('')
   const lastSyncRef = useRef<Record<number, number>>({}) // track when we last changed each answer locally
 
-  // Mark session as started + start syncing
+  // Mark session as started once team name is set
+  const hasStartedRef = useRef(false)
   useEffect(() => {
-    api.startSession().catch(() => {})
-  }, [])
+    if (teamName && !hasStartedRef.current) {
+      hasStartedRef.current = true
+      api.startSession().catch(() => {})
+    }
+  }, [teamName])
 
   // Poll session for sync with questionnaire2
   useEffect(() => {
@@ -104,9 +108,10 @@ export function QuestionnairePage() {
     setAnswers({})
     setValidated(false)
     setStats(null)
+    setTeamName('')
     lastSyncRef.current = {}
+    hasStartedRef.current = false
     await api.resetSession().catch(() => {})
-    await api.startSession().catch(() => {})
   }
 
   const score = validated
@@ -120,6 +125,19 @@ export function QuestionnairePage() {
 
   if (phase === 1 || isShutdown) {
     return <ScreensaverVideo videoSrc="/videos/ERRORSIGNAL.mp4" />
+  }
+
+  if (!teamName) {
+    return (
+      <div className="questionnaire-page">
+        <div className="q-team-overlay">
+          <div className="q-team-popup">
+            <h2 className="q-team-title">RAPPORT D'INCIDENT</h2>
+            <p className="q-team-wait">En attente du nom d'équipe...</p>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   // ── Render ──────────────────────────────────────────────
