@@ -720,6 +720,9 @@ export function DinoChaseGame() {
               </div>
               <div className="dc-locate-title">SYSTEME DE SUIVI GPS</div>
               <div className="dc-locate-sub">Puce sous-cutanee T-REX #044</div>
+              <div className="dc-brief">
+                Retracez le déroulé des évènements de la traque du dinosaure échappé.
+              </div>
               <button className="dc-locate-btn"
                 onClick={() => setLocatePhase('scanning')}
                 onTouchEnd={(e) => { e.preventDefault(); setLocatePhase('scanning') }}>

@@ -50,6 +50,7 @@ const LOGS: LogEntry[] = [
   { event: 'ANALYSE SONORE : FRÉQUENCES BASSES ANORMALES', date: '03/06/2025', time: '18:10', author: 'SYSTÈME' },
   { event: 'OUVERTURE ENCLOS SOIGNEURS', date: '03/06/2025', time: '18:14', author: 'SYSTÈME' },
   { event: 'TENTATIVE DE CONTACT RADIO EXTÉRIEUR : ÉCHEC', date: '03/06/2025', time: '18:15', author: 'SYSTÈME' },
+  { event: 'ERREUR CRITIQUE : PERTE DU RÉSEAU', date: '03/06/2025', time: '18:16', author: 'SYSTÈME' },
   { event: 'PERTE SIGNAL NURSERIE', date: '03/06/2025', time: '18:16', author: 'SYSTÈME' },
   { event: 'OUVERTURE ENCLOS CARNIVORES', date: '03/06/2025', time: '18:19', author: 'SYSTÈME' },
 
@@ -57,7 +58,6 @@ const LOGS: LogEntry[] = [
   { event: 'CHUTE BRUTALE DU RYTHME CARDIAQUE – JULIA', date: '03/06/2025', time: '18:21', author: 'SYSTÈME' },
   { event: 'STATUT VITAL MODIFIÉ : DÉCÈS CONFIRMÉ – JULIA', date: '03/06/2025', time: '18:21', author: 'SYSTÈME' },
 
-  { event: 'ERREUR CRITIQUE : PERTE DU RÉSEAU', date: '03/06/2025', time: '18:22', author: 'SYSTÈME' },
   { event: 'TOUTES LES COMMUNICATIONS EXTERNES COUPÉES', date: '03/06/2025', time: '18:22', author: 'SYSTÈME' },
   { event: 'BASCULE AUTOMATIQUE EN MODE ISOLÉ', date: '03/06/2025', time: '18:23', author: 'SYSTÈME' },
 
@@ -67,6 +67,8 @@ const LOGS: LogEntry[] = [
   { event: 'ACTIVATION DU PROTOCOLE D\'URGENCE AMBRE-LOCK', date: '03/06/2025', time: '18:26', author: 'SYSTÈME' },
   { event: 'LIMITATION DES ACCÈS SYSTÈME', date: '03/06/2025', time: '18:26', author: 'SYSTÈME' },
   { event: 'VERROUILLAGE AUTOMATIQUE DES PORTES SECTEUR EST', date: '03/06/2025', time: '18:27', author: 'SYSTÈME' },
+  { event: 'SUJET HOSTILE : STATUT MODIFIÉ', date: '03/06/2025', time: '18:27', author: 'SYSTÈME' },
+  { event: 'ÉTAT DU SUJET : NEUTRALISÉ', date: '03/06/2025', time: '18:29', author: 'SYSTÈME' },
   { event: 'ACTIVATION DES SIRÈNES D\'ÉVACUATION', date: '03/06/2025', time: '18:30', author: 'SYSTÈME' },
   { event: 'COUPURE ALIMENTATION SECTEUR SUD', date: '03/06/2025', time: '18:45', author: 'SYSTÈME' },
   { event: 'TENTATIVE DE REBOOT DU SERVEUR PRINCIPAL', date: '03/06/2025', time: '18:55', author: 'SYSTÈME' },
@@ -74,9 +76,6 @@ const LOGS: LogEntry[] = [
   { event: 'RESTAURATION PARTIELLE DU WIFI LOCAL', date: '03/06/2025', time: '19:04', author: 'SYSTÈME' },
   { event: 'REPRISE DES FLUX DE DONNÉES INTERNES', date: '03/06/2025', time: '19:05', author: 'SYSTÈME' },
   { event: 'SCAN DES ZONES SÉCURISÉES EN COURS', date: '03/06/2025', time: '19:10', author: 'SYSTÈME' },
-
-  { event: 'SUJET HOSTILE : STATUT MODIFIÉ', date: '03/06/2025', time: '19:27', author: 'SYSTÈME' },
-  { event: 'ÉTAT DU SUJET : NEUTRALISÉ', date: '03/06/2025', time: '19:27', author: 'SYSTÈME' },
 
   { event: 'ARCHIVAGE DES LOGS D\'INCIDENT', date: '03/06/2025', time: '19:29', author: 'SYSTÈME' },
   { event: 'DOSSIER MARQUÉ POUR AUDIT INTERNE', date: '03/06/2025', time: '19:29', author: 'SYSTÈME' },

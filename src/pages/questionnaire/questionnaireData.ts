@@ -85,7 +85,7 @@ export const QUESTIONS: Question[] = [
     id: 6,
     type: 'time',
     text: 'À quelle heure la coupure réseau a-t-elle eu lieu ? (zone log)',
-    answer: '18:22',
+    answer: '18:16',
   },
   // ── MOYEN (7-11) ──
   {
@@ -131,8 +131,8 @@ export const QUESTIONS: Question[] = [
   {
     id: 11,
     type: 'time',
-    text: 'À quelle heure le dino a-t-il été neutralisé ? (zone log)',
-    answer: '19:29',
+    text: 'À quelle heure le dinosaure a-t-il été neutralisé ? (zone log)',
+    answer: '18:29',
   },
   // ── DIFFICILE (12-14) ──
   {
